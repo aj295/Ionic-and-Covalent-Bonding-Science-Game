@@ -1,4 +1,5 @@
 import Character from "./character/character.js"
+import Compound from "./compound.js"
 
 let window_height = window.screen.height
 let window_width = window.screen.width
@@ -34,6 +35,8 @@ export default class Element extends Character {
         }
 
         this.electronegativity = electronegativity
+
+        this.compound = undefined //points to the compound this element is a part of, undefined if it is not part of a compound
     }
     
     aroundElectron() {
@@ -42,28 +45,43 @@ export default class Element extends Character {
             // console.log(this.middlePos.getY - character.middlePos.getY)
             let xDistance = Math.abs(this.middlePos.getX - character.middlePos.getX)
             let yDistance = Math.abs(this.middlePos.getY - character.middlePos.getY)
+
+            if (xDistance < 10 && xDistance != 0 && !character.isPlayer) {
+                //console.log(this instanceof Element)
+                new Compound(this, character)
+                console.log("hi")
+            }
+            else if (xDistance < 10 && xDistance != 0 && character.isPlayer) {
+                //console.log("collided  with player")
+                //put end game logic here <--
+            }
             let range = 500
             // console.log(xDistance)
             // console.log(yDistance)
             if ((xDistance <= range && xDistance > 0) && (yDistance <= range)) { //checks if the electrons are within a certain range of pixels
-                if (this.positive) {
-                    //var B = (A ==="red") ? "hot":"cool";
-                    let positiveXVel = (xDistance > 10) ? -(1 / ((this.middlePos.getX - character.middlePos.getX) * 0.1)) * (10 * this.electronegativity) : 0
+                let pullTogether = false
+                let pushApart = false
+                if (character.isPlayer || character instanceof Element) {
+                    pullTogether = (character.isPlayer && this.positive) || ((character.negative && this.positive) || (character.positive && this.negative))
+                    pushApart = (character.isPlayer && this.negative) || ((character.positive && this.positive) || (character.negative && this.negative))
+                }
+                if (pullTogether) {
+                    let positiveXVel = (xDistance > 10) ? -(1 / ((this.middlePos.getX - character.middlePos.getX) * 0.1)) * (6 * this.electronegativity) : 0
                     let positiveYVel = (this.middlePos.getY - character.middlePos.getY) * 0.01 //velocities applied if the element is positive
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && positiveYVel < 0) positiveYVel = 0 //stops it from going through floor
-                    if (!this.moveLeft && positiveXVel < 0) positiveXVel = 0 //stops it from going through walls (doesn't really work if it goes too fast)
-                    if (!this.moveRight && positiveXVel > 0) positiveXVel = 0
+                    //if (!this.moveLeft && positiveXVel < 0) positiveXVel = -positiveXVel * 10
+                    //if (!this.moveRight && positiveXVel > 0) positiveXVel = -positiveXVel * 10
                     if (!this.moveUp && positiveYVel > 0) positiveYVel = 0
                     this.applyVelocity(30, [positiveXVel, positiveYVel])
                 }
-                else if (this.negative) {
-                    let negativeXVel = (xDistance > 10) ? (1 / (this.middlePos.getX - character.middlePos.getX)) * (100 * this.electronegativity) : 0
+                else if (pushApart) {
+                    let negativeXVel = (xDistance > 10) ? (1 / ((this.middlePos.getX - character.middlePos.getX) * 0.1)) * (6 * this.electronegativity) : 0
                     let negativeYVel = -(this.middlePos.getY - character.middlePos.getY) * 0.01 //velocities applied if the element is positive
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && negativeYVel < 0) negativeYVel = 0 //stops it from going through floor
-                    if ((!this.moveLeft) && negativeXVel < 0) negativeXVel = 0 //stops it from going through walls (doesn't really work if it goes too fast)
-                    if ((!this.moveRight) && negativeXVel > 0) negativeXVel = 0
-                    if ((!this.moveUp) && negativeYVel > 0) negativeYVel = 0
-                    this.applyVelocity(60, [negativeXVel, negativeYVel])
+                    if (!this.moveLeft && negativeXVel < 0) negativeXVel = -negativeXVel * 10
+                    if (!this.moveRight && negativeXVel > 0) negativeXVel = -negativeXVel * 10
+                    if (!this.moveUp && negativeYVel > 0) negativeYVel = 0
+                    this.applyVelocity(30, [negativeXVel, negativeYVel])
                 }
             }
         });

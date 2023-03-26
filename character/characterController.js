@@ -19,6 +19,7 @@ export default class characterController {
      */
     constructor(character, inAirResistance = 1.7, jumpForce = 150, speed = 5, flyingEnabled = false) {
         this.character = character
+        this.character.isPlayer = true
         this.jumpForce = jumpForce
         this.speed = speed
         this.flyingEnabled = flyingEnabled

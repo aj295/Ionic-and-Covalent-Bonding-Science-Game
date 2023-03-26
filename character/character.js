@@ -43,6 +43,8 @@ export default class Character {
         this.beginningXPos = xpos
         this.beginningYPos = ypos
 
+        this.isPlayer = false
+
         level.characters.push(this)
     }
 
@@ -196,7 +198,7 @@ export default class Character {
                 }
             }
             
-            if (distanceToLine < 5 && distanceToLine >= 0) {
+            if (distanceToLine < 8 && distanceToLine >= 0) {
                 this.onLineFloor = true
                 return true
             }
@@ -335,5 +337,4 @@ export default class Character {
         this.applyGravity()
         this.collisionPhysics()
     }
-
 }

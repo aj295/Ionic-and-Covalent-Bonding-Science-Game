@@ -29,10 +29,10 @@ character.draw()
 let characterController = new CharacterController(character, 1.8, 300)
 characterController.startControllerInput("Space", "KeyA", "KeyD", "ShiftLeft")
 
-let element = new Element(ctx, level1, 1, 1, electron, (window_width/2) + 100, window_height - characterHeight)
+let element = new Element(ctx, level1, -1, 3, electron, window_width - 600, window_height - characterHeight)
 element.draw()
 
-let element2 = new Element(ctx, level1, 1, 1, electron, 20, window_height - characterHeight - 25)
+let element2 = new Element(ctx, level1, 1, 3, electron, 20, window_height - characterHeight - 100)
 element2.draw()
 
 // let testElement = new Element(ctx, -1, "./Sprites/positive.png", 100, 100, 0.5)
