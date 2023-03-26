@@ -21,7 +21,9 @@ export default class Line {
         this.vertical = x1 == x2
         this.horizontal = y1 == y2
         this.diagonal = !this.vertical && !this.horizontal
-        if (level != undefined) level.addCollisionLine(this)
+        if (level != undefined) {
+            level.addCollisionLine(this)
+        }
     }
 
     draw() {

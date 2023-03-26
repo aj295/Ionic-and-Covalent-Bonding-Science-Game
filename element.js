@@ -48,18 +48,18 @@ export default class Element extends Character {
             if ((xDistance <= range && xDistance > 0) && (yDistance <= range)) { //checks if the electrons are within a certain range of pixels
                 if (this.positive) {
                     //var B = (A ==="red") ? "hot":"cool";
-                    let positiveXVel = (xDistance > 10) ? -(1 / (this.middlePos.getX - character.middlePos.getX)) * (100 * this.electronegativity) : 0
+                    let positiveXVel = (xDistance > 10) ? -(1 / ((this.middlePos.getX - character.middlePos.getX) * 0.1)) * (10 * this.electronegativity) : 0
                     let positiveYVel = (this.middlePos.getY - character.middlePos.getY) * 0.01 //velocities applied if the element is positive
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && positiveYVel < 0) positiveYVel = 0 //stops it from going through floor
                     if (!this.moveLeft && positiveXVel < 0) positiveXVel = 0 //stops it from going through walls (doesn't really work if it goes too fast)
                     if (!this.moveRight && positiveXVel > 0) positiveXVel = 0
                     if (!this.moveUp && positiveYVel > 0) positiveYVel = 0
-                    this.applyVelocity(60, [positiveXVel, positiveYVel])
+                    this.applyVelocity(30, [positiveXVel, positiveYVel])
                 }
                 else if (this.negative) {
                     let negativeXVel = (xDistance > 10) ? (1 / (this.middlePos.getX - character.middlePos.getX)) * (100 * this.electronegativity) : 0
                     let negativeYVel = -(this.middlePos.getY - character.middlePos.getY) * 0.01 //velocities applied if the element is positive
-                    if ((this.middleBottom.getY > window_height - 5 || this.onLineFloor) && negativeYVel < 0) negativeYVel = 0 //stops it from going through floor
+                    if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && negativeYVel < 0) negativeYVel = 0 //stops it from going through floor
                     if ((!this.moveLeft) && negativeXVel < 0) negativeXVel = 0 //stops it from going through walls (doesn't really work if it goes too fast)
                     if ((!this.moveRight) && negativeXVel > 0) negativeXVel = 0
                     if ((!this.moveUp) && negativeYVel > 0) negativeYVel = 0

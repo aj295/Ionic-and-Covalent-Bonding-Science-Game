@@ -40,6 +40,9 @@ export default class Character {
 
         this.onLineFloor = false //is true if the current floor that the character is on is a line
 
+        this.beginningXPos = xpos
+        this.beginningYPos = ypos
+
         level.characters.push(this)
     }
 

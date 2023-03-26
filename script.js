@@ -5,6 +5,9 @@ import spriteMap from "./character/spriteMap.js"
 import Element from "./element.js"
 import Level from "./level.js"
 
+let lastCalledTime
+export let fps
+
 const canvas = document.getElementById("canvas")
 const ctx = canvas.getContext("2d")
 
@@ -23,7 +26,7 @@ const characterHeight = 50
 let character = new Character(ctx, level1, electron, window_width/2, window_height - characterHeight, 0.01)
 character.draw()
 
-let characterController = new CharacterController(character, 3, 300)
+let characterController = new CharacterController(character, 1.8, 300)
 characterController.startControllerInput("Space", "KeyA", "KeyD", "ShiftLeft")
 
 let element = new Element(ctx, level1, 1, 1, electron, (window_width/2) + 100, window_height - characterHeight)
@@ -46,13 +49,21 @@ testFloor.draw()
 let testFloorWithWall = new Line(10, 100, 10, window_height - 25, ctx, level1)
 testFloorWithWall.draw()
 
-
+function calculateFps() {
+    if (!lastCalledTime) {
+        lastCalledTime = performance.now()
+        fps = 0
+        return
+    }
+    let delta = (performance.now() - lastCalledTime) / 1000
+    lastCalledTime = performance.now()
+    fps = 1/delta
+}
 
 let tick = () => {
     requestAnimationFrame(tick)
-    character.tickFunctions()
-    element.tickFunctions()
-    element2.tickFunctions()
+    level1.tickLevel()
+    calculateFps()
 }
 
 tick()

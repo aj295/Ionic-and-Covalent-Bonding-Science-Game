@@ -2,11 +2,16 @@ export default class Level {
     /**
      * 
      * @param {number} level the number of the current level 
+     * @param {number[]} beginningPos the x and y coordinate pair that the character will begin at in the beginning of the level
+     * @param {*} canvas the canvas object that the level will be on
+     * @param {String} backGroundImage the String path to the image of the background of this image
      */
-    constructor(level) {
+    constructor(level, beginningPos, canvas, backGroundImage) {
         this.level = level
+        this.beginningPos = beginningPos
+        this.canvas = canvas
+        this.backGroundImage = backGroundImage
         this.collisionLines = []
-        this.levelFinished = false
         this.characters = []
     }
 
@@ -70,5 +75,11 @@ export default class Level {
             } 
         })
         return retValue
+    }
+
+    tickLevel() {
+        this.characters.forEach((character) => {
+            character.tickFunctions()
+        })
     }
 }
