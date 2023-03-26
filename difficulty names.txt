@@ -1,0 +1,3 @@
+Easy: Some people dont like restarting levels, so dying only teleports you back to the beginning of that level 
+Normal: Time for the normal playing experience, dying restarts the level, so dont die 
+Nuclear fusion: Death is the end, life is over, dying sets you back to level 1 (Don't worry you can change this setting later)
