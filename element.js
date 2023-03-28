@@ -58,9 +58,9 @@ export default class Element extends Character {
             }
 
             let range = 500
-            const MUTLI_FACTOR = 40 //higher number makes the element move faster in general
+            const MUTLI_FACTOR = 10 //higher number makes the element move faster in general
             const EXPONENTIAL_FACTOR = 0.25 //lower number makes elements speed up as they get closer together
-            const MOVING_FRAMES = 10 //the amount of animation frames the velocity is applied - more frames = smoother movement for more lag and faster movement
+            const MOVING_FRAMES = 1 //the amount of animation frames the velocity is applied - more frames = smoother movement for more lag and faster movement
 
             // console.log(xDistance)
             // console.log(yDistance)
@@ -72,7 +72,7 @@ export default class Element extends Character {
                     pushApart = (character.isPlayer && this.negative) || ((character.positive && this.positive) || (character.negative && this.negative))
                 }
                 if (pullTogether) {
-                    let positiveXVel = (xDistance > 10) ? -(1 / ((this.middlePos.getX - character.middlePos.getX) * EXPONENTIAL_FACTOR)) * (MUTLI_FACTOR * this.electronegativity) : 0
+                    let positiveXVel = (xDistance > 10) ? -(1 / ((this.middlePos.getX - character.middlePos.getX) * (EXPONENTIAL_FACTOR))) * (MUTLI_FACTOR * this.electronegativity): 0
                     let positiveYVel = (this.middlePos.getY - character.middlePos.getY) * 0.01 //velocities applied if the element is positive
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && positiveYVel < 0) positiveYVel = 0 //stops it from going through floor
                     //if (!this.moveLeft && positiveXVel < 0) positiveXVel = -positiveXVel * 10
