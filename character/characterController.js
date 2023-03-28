@@ -97,8 +97,8 @@ export default class characterController {
             if (this.character.isGrounded()) appliedSpeed = this.speed
             else appliedSpeed = this.speed / this.inAirResistance
             if (crouched) appliedSpeed = this.speed / 5
-            if (moveLeft) {this.character.applyVelocity(30, [-appliedSpeed, 0])}
-            if (moveRight) this.character.applyVelocity(30, [appliedSpeed, 0])
+            if (moveLeft) {this.character.applyVelocity(1, [-appliedSpeed, 0])}
+            if (moveRight) this.character.applyVelocity(1, [appliedSpeed, 0])
             if (!jumping && this.character.isGrounded() && awaitFall) {
                 this.character.sprite = this.spriteMap.idle
                 awaitFall = false

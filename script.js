@@ -27,7 +27,7 @@ const characterHeight = 50
 let character = new Character(ctx, level1, electron, window_width/2, window_height - characterHeight, 0.01)
 character.draw()
 
-let characterController = new CharacterController(character, 1.2, 300)
+let characterController = new CharacterController(character, 1.2, 300, 4)
 characterController.startControllerInput("Space", "KeyA", "KeyD", "ShiftLeft")
 
 let element = new Element(ctx, level1, -1, 2, electron, window_width - 600, window_height - characterHeight)
