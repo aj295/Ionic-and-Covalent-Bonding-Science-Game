@@ -1,5 +1,6 @@
 import Character from "./character/character.js"
 import Compound from "./compound.js"
+import { fps } from "./script.js"
 
 let window_height = window.screen.height
 let window_width = window.screen.width
@@ -55,7 +56,12 @@ export default class Element extends Character {
                 //console.log("collided  with player")
                 //put end game logic here <--
             }
+
             let range = 500
+            const MUTLI_FACTOR = 40 //higher number makes the element move faster in general
+            const EXPONENTIAL_FACTOR = 0.25 //lower number makes elements speed up as they get closer together
+            const MOVING_FRAMES = 10 //the amount of animation frames the velocity is applied - more frames = smoother movement for more lag and faster movement
+
             // console.log(xDistance)
             // console.log(yDistance)
             if ((xDistance <= range && xDistance > 0) && (yDistance <= range)) { //checks if the electrons are within a certain range of pixels
@@ -66,22 +72,22 @@ export default class Element extends Character {
                     pushApart = (character.isPlayer && this.negative) || ((character.positive && this.positive) || (character.negative && this.negative))
                 }
                 if (pullTogether) {
-                    let positiveXVel = (xDistance > 10) ? -(1 / ((this.middlePos.getX - character.middlePos.getX) * 0.1)) * (6 * this.electronegativity) : 0
+                    let positiveXVel = (xDistance > 10) ? -(1 / ((this.middlePos.getX - character.middlePos.getX) * EXPONENTIAL_FACTOR)) * (MUTLI_FACTOR * this.electronegativity) : 0
                     let positiveYVel = (this.middlePos.getY - character.middlePos.getY) * 0.01 //velocities applied if the element is positive
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && positiveYVel < 0) positiveYVel = 0 //stops it from going through floor
                     //if (!this.moveLeft && positiveXVel < 0) positiveXVel = -positiveXVel * 10
                     //if (!this.moveRight && positiveXVel > 0) positiveXVel = -positiveXVel * 10
                     if (!this.moveUp && positiveYVel > 0) positiveYVel = 0
-                    this.applyVelocity(30, [positiveXVel, positiveYVel])
+                    this.applyVelocity(MOVING_FRAMES, [positiveXVel, positiveYVel])
                 }
                 else if (pushApart) {
-                    let negativeXVel = (xDistance > 10) ? (1 / ((this.middlePos.getX - character.middlePos.getX) * 0.1)) * (6 * this.electronegativity) : 0
+                    let negativeXVel = (xDistance > 10) ? (1 / ((this.middlePos.getX - character.middlePos.getX) * EXPONENTIAL_FACTOR)) * (MUTLI_FACTOR * this.electronegativity) : 0
                     let negativeYVel = -(this.middlePos.getY - character.middlePos.getY) * 0.01 //velocities applied if the element is positive
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && negativeYVel < 0) negativeYVel = 0 //stops it from going through floor
                     if (!this.moveLeft && negativeXVel < 0) negativeXVel = -negativeXVel * 10
                     if (!this.moveRight && negativeXVel > 0) negativeXVel = -negativeXVel * 10
                     if (!this.moveUp && negativeYVel > 0) negativeYVel = 0
-                    this.applyVelocity(30, [negativeXVel, negativeYVel])
+                    this.applyVelocity(MOVING_FRAMES, [negativeXVel, negativeYVel])
                 }
             }
         });
