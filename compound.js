@@ -10,6 +10,16 @@ export default class Compound {
         this.elementList = [element1, element2]
         element1.compound = this
         element2.compound = this
+        this.totalElectronegativity = Math.abs(element1.electronegativity - element2.electronegativity)
+
+        if (element1.positive && element2.negative) {
+            this.posSide = element1
+            this.negSide = element2
+        }
+        else if (element1.negative && element2.positive) {
+            this.posSide = element2
+            this.negSide = element1
+        }
     }
 
     applyVelocity(time, distance) {

@@ -47,11 +47,13 @@ export default class Element extends Character {
             let xDistance = Math.abs(this.middlePos.getX - character.middlePos.getX)
             let yDistance = Math.abs(this.middlePos.getY - character.middlePos.getY)
 
-            if (xDistance <= character.width && xDistance != 0 && !character.isPlayer) {
+            if (xDistance <= character.width && xDistance != 0 && !character.isPlayer) { //two non-player elements colliding physics
                 //console.log(this instanceof Element)
                 // let newCompund = new Compound(this, character)
                 // this.compound = newCompund
                 // character.compound = newCompund
+                this.compound = new Compound(this, character)
+                character.compound = this.compound
                 return 0
             }
             else if (xDistance < 10 && xDistance != 0 && character.isPlayer) {
@@ -69,10 +71,26 @@ export default class Element extends Character {
             if ((xDistance <= range && xDistance > 0) && (yDistance <= range)) { //checks if the electrons are within a certain range of pixels
                 let pullTogether = false
                 let pushApart = false
-                if (character.isPlayer || character instanceof Element) {
+                if ((character.isPlayer || character instanceof Element) && (this.compound == undefined)) {
                     if (this.electronegativity < 1 || character.electronegativity < 1) return 0
                     pullTogether = (character.isPlayer && this.positive) || ((character.negative && this.positive) || (character.positive && this.negative))
                     pushApart = (character.isPlayer && this.negative) || ((character.positive && this.positive) || (character.negative && this.negative))
+                }
+                else {
+                    if (character.positive == this.negative || this.positive && character.isPlayer) { //checks to see if they are two different charges
+                        if (this.compound.posSide.middlePos.getX - character.middlePos.getX < this.compound.negSide.middlePos.getX - character.middlePos.getX) { //if the positive side of the compund is closer to the character than the negative side
+                            pullTogether = true
+                            pushApart = false
+                        }
+                        else {
+                            pullTogether = false
+                            pushApart = true
+                        }
+                    }
+                    else {
+                        pullTogether = false
+                        pushApart = true
+                    }
                 }
                 if (pullTogether) {                                                                                                                                                      //expression is used to make the element move slower if it is further away in terms of y distance
                     let positiveXVel = (xDistance > 10) ? (-(1 / ((this.middlePos.getX - character.middlePos.getX) * (EXPONENTIAL_FACTOR))) * (MUTLI_FACTOR * this.electronegativity)) / (((yDistance * (0.000999 * MUTLI_FACTOR * this.electronegativity)) + 1) / 1.2): 0
