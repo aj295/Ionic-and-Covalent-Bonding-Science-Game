@@ -47,18 +47,20 @@ export default class Element extends Character {
             let xDistance = Math.abs(this.middlePos.getX - character.middlePos.getX)
             let yDistance = Math.abs(this.middlePos.getY - character.middlePos.getY)
 
-            if (xDistance < 10 && xDistance != 0 && !character.isPlayer) {
+            if (xDistance <= character.width && xDistance != 0 && !character.isPlayer) {
                 //console.log(this instanceof Element)
-                new Compound(this, character)
-                console.log("hi")
+                // let newCompund = new Compound(this, character)
+                // this.compound = newCompund
+                // character.compound = newCompund
+                return 0
             }
             else if (xDistance < 10 && xDistance != 0 && character.isPlayer) {
                 //console.log("collided  with player")
                 //put end game logic here <--
             }
 
-            let range = 500
-            const MUTLI_FACTOR = 10 //higher number makes the element move faster in general
+            let range = 400
+            const MUTLI_FACTOR = 30 //higher number makes the element move faster in general
             const EXPONENTIAL_FACTOR = 0.25 //lower number makes elements speed up as they get closer together
             const MOVING_FRAMES = 1 //the amount of animation frames the velocity is applied - more frames = smoother movement for more lag and faster movement
 
@@ -68,26 +70,30 @@ export default class Element extends Character {
                 let pullTogether = false
                 let pushApart = false
                 if (character.isPlayer || character instanceof Element) {
+                    if (this.electronegativity < 1 || character.electronegativity < 1) return 0
                     pullTogether = (character.isPlayer && this.positive) || ((character.negative && this.positive) || (character.positive && this.negative))
                     pushApart = (character.isPlayer && this.negative) || ((character.positive && this.positive) || (character.negative && this.negative))
                 }
-                if (pullTogether) {
-                    let positiveXVel = (xDistance > 10) ? -(1 / ((this.middlePos.getX - character.middlePos.getX) * (EXPONENTIAL_FACTOR))) * (MUTLI_FACTOR * this.electronegativity): 0
+                if (pullTogether) {                                                                                                                                                      //expression is used to make the element move slower if it is further away in terms of y distance
+                    let positiveXVel = (xDistance > 10) ? (-(1 / ((this.middlePos.getX - character.middlePos.getX) * (EXPONENTIAL_FACTOR))) * (MUTLI_FACTOR * this.electronegativity)) / (((yDistance * (0.000999 * MUTLI_FACTOR * this.electronegativity)) + 1) / 1.2): 0
                     let positiveYVel = (this.middlePos.getY - character.middlePos.getY) * 0.01 //velocities applied if the element is positive
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && positiveYVel < 0) positiveYVel = 0 //stops it from going through floor
                     //if (!this.moveLeft && positiveXVel < 0) positiveXVel = -positiveXVel * 10
                     //if (!this.moveRight && positiveXVel > 0) positiveXVel = -positiveXVel * 10
                     if (!this.moveUp && positiveYVel > 0) positiveYVel = 0
-                    this.applyVelocity(MOVING_FRAMES, [positiveXVel, positiveYVel])
+                    
+                    if (character.compound == undefined) this.applyVelocity(MOVING_FRAMES, [positiveXVel, positiveYVel])
+                    else character.compound.applyVelocity(MOVING_FRAMES, [positiveXVel, positiveYVel])
                 }
                 else if (pushApart) {
-                    let negativeXVel = (xDistance > 10) ? (1 / ((this.middlePos.getX - character.middlePos.getX) * EXPONENTIAL_FACTOR)) * (MUTLI_FACTOR * this.electronegativity) : 0
-                    let negativeYVel = -(this.middlePos.getY - character.middlePos.getY) * 0.01 //velocities applied if the element is positive
+                    let negativeXVel = (xDistance > 10) ? ((1 / ((this.middlePos.getX - character.middlePos.getX) * (EXPONENTIAL_FACTOR))) * (MUTLI_FACTOR * this.electronegativity)) / (((yDistance * (0.000999 * MUTLI_FACTOR * this.electronegativity)) + 1) / 2.2): 0
+                    let negativeYVel = -(this.middlePos.getY - character.middlePos.getY) * 0.01 * this.electronegativity  //velocities applied if the element is positive
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && negativeYVel < 0) negativeYVel = 0 //stops it from going through floor
                     if (!this.moveLeft && negativeXVel < 0) negativeXVel = -negativeXVel * 10
                     if (!this.moveRight && negativeXVel > 0) negativeXVel = -negativeXVel * 10
                     if (!this.moveUp && negativeYVel > 0) negativeYVel = 0
-                    this.applyVelocity(MOVING_FRAMES, [negativeXVel, negativeYVel])
+                    if (character.compound == undefined) this.applyVelocity(MOVING_FRAMES, [negativeXVel, negativeYVel])
+                    else character.compound.applyVelocity(MOVING_FRAMES, [negativeXVel, negativeYVel])
                 }
             }
         });
