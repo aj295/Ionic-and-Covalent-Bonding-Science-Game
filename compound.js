@@ -20,6 +20,15 @@ export default class Compound {
             this.posSide = element2
             this.negSide = element1
         }
+
+        if (element1.middlePos.getX > element2.middlePos.getX) {
+            this.leftSide = element2
+            this.rightSide = element1
+        }
+        else if (element1.middlePos.getX < element2.middlePos.getX) {
+            this.leftSide = element1
+            this.rightSide = element2
+        }
     }
 
     applyVelocity(time, distance) {

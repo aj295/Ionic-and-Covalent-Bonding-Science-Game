@@ -62,7 +62,7 @@ export default class Element extends Character {
             }
 
             let range = 600
-            const MUTLI_FACTOR = 50 //higher number makes the element move faster in general
+            const MUTLI_FACTOR = 100 //higher number makes the element move faster in general
             const EXPONENTIAL_FACTOR = 0.45 //lower number makes elements speed up as they get closer together
             const MOVING_FRAMES = 1 //the amount of animation frames the velocity is applied - more frames = smoother movement for more lag and faster movement
 
@@ -71,15 +71,18 @@ export default class Element extends Character {
             if ((xDistance <= range && xDistance > 0) && (yDistance <= range)) { //checks if the electrons are within a certain range of pixels
                 let pullTogether = false
                 let pushApart = false
-                // let toLeft = this.middlePos.getX < character.middlePos.getX
-                // let toRight = this.middlePos.getX > character.middlePos.getX
-                // console.log((toLeft) ? "left" : "right")
+                let toLeft = this.middlePos.getX < character.middlePos.getX
+                let toRight = this.middlePos.getX > character.middlePos.getX
+                console.log((toLeft) ? "left" : "right")
 
 
                 if ((character.isPlayer || character instanceof Element) && (this.compound == undefined)) {
-                    if (this.electronegativity < 1 || character.electronegativity < 1) return 0
                     pullTogether = (character.isPlayer && this.positive) || ((character.negative && this.positive) || (character.positive && this.negative))
                     pushApart = (character.isPlayer && this.negative) || ((character.positive && this.positive) || (character.negative && this.negative))
+                }
+                if ((character.isPlayer || character instanceof Element) && (this.compound != undefined)) {
+                    pullTogether = (toLeft && this.compound.leftSide.positive != character.negative) || (toRight && this.compound.rightSide.positive != character.negative)
+                    pullTogether = (toLeft && this.compound.leftSide.positive == character.negative) || (toRight && this.compound.rightSide.positive == character.negative)
                 }
 
                 if (pullTogether) {                                                                                                                                                  //expression is used to make the element move slower if it is further away in terms of y distance
