@@ -44,6 +44,7 @@ export default class Character {
         this.beginningYPos = ypos
 
         this.isPlayer = false
+        this.characterController = undefined
 
         level.characters.push(this)
     }

@@ -61,9 +61,9 @@ export default class Element extends Character {
                 //put end game logic here <--
             }
 
-            let range = 400
-            const MUTLI_FACTOR = 30 //higher number makes the element move faster in general
-            const EXPONENTIAL_FACTOR = 0.25 //lower number makes elements speed up as they get closer together
+            let range = 600
+            const MUTLI_FACTOR = 50 //higher number makes the element move faster in general
+            const EXPONENTIAL_FACTOR = 0.45 //lower number makes elements speed up as they get closer together
             const MOVING_FRAMES = 1 //the amount of animation frames the velocity is applied - more frames = smoother movement for more lag and faster movement
 
             // console.log(xDistance)
@@ -71,30 +71,24 @@ export default class Element extends Character {
             if ((xDistance <= range && xDistance > 0) && (yDistance <= range)) { //checks if the electrons are within a certain range of pixels
                 let pullTogether = false
                 let pushApart = false
+                // let toLeft = this.middlePos.getX < character.middlePos.getX
+                // let toRight = this.middlePos.getX > character.middlePos.getX
+                // console.log((toLeft) ? "left" : "right")
+
+
                 if ((character.isPlayer || character instanceof Element) && (this.compound == undefined)) {
                     if (this.electronegativity < 1 || character.electronegativity < 1) return 0
                     pullTogether = (character.isPlayer && this.positive) || ((character.negative && this.positive) || (character.positive && this.negative))
                     pushApart = (character.isPlayer && this.negative) || ((character.positive && this.positive) || (character.negative && this.negative))
                 }
-                else {
-                    if (character.positive == this.negative || this.positive && character.isPlayer) { //checks to see if they are two different charges
-                        if (this.compound.posSide.middlePos.getX - character.middlePos.getX < this.compound.negSide.middlePos.getX - character.middlePos.getX) { //if the positive side of the compund is closer to the character than the negative side
-                            pullTogether = true
-                            pushApart = false
-                        }
-                        else {
-                            pullTogether = false
-                            pushApart = true
-                        }
-                    }
-                    else {
-                        pullTogether = false
-                        pushApart = true
-                    }
-                }
-                if (pullTogether) {                                                                                                                                                      //expression is used to make the element move slower if it is further away in terms of y distance
+
+                if (pullTogether) {                                                                                                                                                  //expression is used to make the element move slower if it is further away in terms of y distance
                     let positiveXVel = (xDistance > 10) ? (-(1 / ((this.middlePos.getX - character.middlePos.getX) * (EXPONENTIAL_FACTOR))) * (MUTLI_FACTOR * this.electronegativity)) / (((yDistance * (0.000999 * MUTLI_FACTOR * this.electronegativity)) + 1) / 1.2): 0
                     let positiveYVel = (this.middlePos.getY - character.middlePos.getY) * 0.01 //velocities applied if the element is positive
+
+                    if (!(character.isGrounded() && -positiveYVel < 0)) character.applyVelocity(1, [-positiveXVel, -positiveYVel / 2])
+                    else character.applyVelocity(1, [-positiveXVel, 0])
+
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && positiveYVel < 0) positiveYVel = 0 //stops it from going through floor
                     //if (!this.moveLeft && positiveXVel < 0) positiveXVel = -positiveXVel * 10
                     //if (!this.moveRight && positiveXVel > 0) positiveXVel = -positiveXVel * 10
@@ -106,6 +100,10 @@ export default class Element extends Character {
                 else if (pushApart) {
                     let negativeXVel = (xDistance > 10) ? ((1 / ((this.middlePos.getX - character.middlePos.getX) * (EXPONENTIAL_FACTOR))) * (MUTLI_FACTOR * this.electronegativity)) / (((yDistance * (0.000999 * MUTLI_FACTOR * this.electronegativity)) + 1) / 2.2): 0
                     let negativeYVel = -(this.middlePos.getY - character.middlePos.getY) * 0.01 * this.electronegativity  //velocities applied if the element is positive
+                    
+                    if (character.moveUp) character.applyVelocity(1, [-negativeXVel, -negativeYVel / 5])
+                    else (character.applyVelocity(1, [-negativeXVel, 0]))
+
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && negativeYVel < 0) negativeYVel = 0 //stops it from going through floor
                     if (!this.moveLeft && negativeXVel < 0) negativeXVel = -negativeXVel * 10
                     if (!this.moveRight && negativeXVel > 0) negativeXVel = -negativeXVel * 10
