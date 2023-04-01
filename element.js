@@ -65,8 +65,7 @@ export default class Element extends Character {
                 vx = 0
                 vy = 0
             }
-
-            console.log(distance)
+            
             if (!this.moveUp && vy > 0) vy = 0
 
 
