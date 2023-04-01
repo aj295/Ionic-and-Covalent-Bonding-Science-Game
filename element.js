@@ -42,8 +42,35 @@ export default class Element extends Character {
     
     aroundElectron() {
         this.level.characters.forEach(character => {
-            // console.log(this.middlePos.getX - character.middlePos.getX)
-            // console.log(this.middlePos.getY - character.middlePos.getY)
+
+            let x1 = this.middlePos.getX
+            let y1 = this.middlePos.getY
+
+            let x2 = character.middlePos.getX
+            let y2 = character.middlePos.getY
+
+            let distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
+
+            let MULTIPLIER = 200
+            let k = MULTIPLIER * distance
+            let acceleration = k / Math.pow(distance, 2)
+
+            let vx, vy
+
+            if (Math.abs(distance) > character.width) { 
+                vx = acceleration * (x2 - x1) / distance
+                vy = acceleration * (y2 - y1) / distance
+            }
+            else {
+                vx = 0
+                vy = 0
+            }
+
+            console.log(distance)
+            if (!this.moveUp && vy > 0) vy = 0
+
+
+            let stopDistance = 10
             let xDistance = Math.abs(this.middlePos.getX - character.middlePos.getX)
             let yDistance = Math.abs(this.middlePos.getY - character.middlePos.getY)
 
@@ -73,7 +100,7 @@ export default class Element extends Character {
                 let pushApart = false
                 let toLeft = this.middlePos.getX < character.middlePos.getX
                 let toRight = this.middlePos.getX > character.middlePos.getX
-                console.log((toLeft) ? "left" : "right")
+                //console.log((toLeft) ? "left" : "right")
 
 
                 if ((character.isPlayer || character instanceof Element) && (this.compound == undefined)) {
@@ -85,34 +112,28 @@ export default class Element extends Character {
                     pullTogether = (toLeft && this.compound.leftSide.positive == character.negative) || (toRight && this.compound.rightSide.positive == character.negative)
                 }
 
-                if (pullTogether) {                                                                                                                                                  //expression is used to make the element move slower if it is further away in terms of y distance
-                    let positiveXVel = (xDistance > 10) ? (-(1 / ((this.middlePos.getX - character.middlePos.getX) * (EXPONENTIAL_FACTOR))) * (MUTLI_FACTOR * this.electronegativity)) / (((yDistance * (0.000999 * MUTLI_FACTOR * this.electronegativity)) + 1) / 1.2): 0
-                    let positiveYVel = (this.middlePos.getY - character.middlePos.getY) * 0.01 //velocities applied if the element is positive
+                if (pullTogether) {
+                    vx *= this.electronegativity
+                    vy *= this.electronegativity
 
-                    if (!(character.isGrounded() && -positiveYVel < 0)) character.applyVelocity(1, [-positiveXVel, -positiveYVel / 2])
-                    else character.applyVelocity(1, [-positiveXVel, 0])
+                    if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy > 0) vy = 0
 
-                    if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && positiveYVel < 0) positiveYVel = 0 //stops it from going through floor
-                    //if (!this.moveLeft && positiveXVel < 0) positiveXVel = -positiveXVel * 10
-                    //if (!this.moveRight && positiveXVel > 0) positiveXVel = -positiveXVel * 10
-                    if (!this.moveUp && positiveYVel > 0) positiveYVel = 0
-                    
-                    if (character.compound == undefined) this.applyVelocity(MOVING_FRAMES, [positiveXVel, positiveYVel])
-                    else character.compound.applyVelocity(MOVING_FRAMES, [positiveXVel, positiveYVel])
+                    if (!(character.isGrounded() && vy > 0)) character.applyVelocity(1, [-vx, -vy / 2])
+                    else character.applyVelocity(1, [-vx, 0])
+
+                    if (character.compound == undefined) this.applyVelocity(MOVING_FRAMES, [vx, -vy])
+                    else character.compound.applyVelocity(MOVING_FRAMES, [vx, vy])
                 }
                 else if (pushApart) {
-                    let negativeXVel = (xDistance > 10) ? ((1 / ((this.middlePos.getX - character.middlePos.getX) * (EXPONENTIAL_FACTOR))) * (MUTLI_FACTOR * this.electronegativity)) / (((yDistance * (0.000999 * MUTLI_FACTOR * this.electronegativity)) + 1) / 2.2): 0
-                    let negativeYVel = -(this.middlePos.getY - character.middlePos.getY) * 0.01 * this.electronegativity  //velocities applied if the element is positive
-                    
-                    if (character.moveUp) character.applyVelocity(1, [-negativeXVel, -negativeYVel / 5])
-                    else (character.applyVelocity(1, [-negativeXVel, 0]))
+                    if (!(character.isGrounded() && vy > 0)) character.applyVelocity(1, [vx, vy / 2])
+                    else character.applyVelocity(1, [vx, 0])
 
-                    if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && negativeYVel < 0) negativeYVel = 0 //stops it from going through floor
-                    if (!this.moveLeft && negativeXVel < 0) negativeXVel = -negativeXVel * 10
-                    if (!this.moveRight && negativeXVel > 0) negativeXVel = -negativeXVel * 10
-                    if (!this.moveUp && negativeYVel > 0) negativeYVel = 0
-                    if (character.compound == undefined) this.applyVelocity(MOVING_FRAMES, [negativeXVel, negativeYVel])
-                    else character.compound.applyVelocity(MOVING_FRAMES, [negativeXVel, negativeYVel])
+                    if (distance < MULTIPLIER / 2) vx = -vx * distance
+
+                    if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy < 0) vy = 0
+
+                    if (character.compound == undefined) this.applyVelocity(MOVING_FRAMES, [-vx, vy])
+                    else character.compound.applyVelocity(MOVING_FRAMES, [-vx, vy])
                 }
             }
         });
