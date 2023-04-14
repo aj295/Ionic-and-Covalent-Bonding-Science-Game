@@ -1,4 +1,5 @@
-import Element from "./element.js";
+import Character from "./character/character.js"
+import Element from "./element.js"
 
 export default class Compound {
     /**
@@ -7,31 +8,12 @@ export default class Compound {
      * @param {Element} element2 
      */
     constructor(element1, element2) {
-        this.elementList = [element1, element2]
         element1.compound = this
         element2.compound = this
-        this.totalElectronegativity = Math.abs(element1.electronegativity - element2.electronegativity)
-
-        if (element1.positive && element2.negative) {
-            this.posSide = element1
-            this.negSide = element2
-        }
-        else if (element1.negative && element2.positive) {
-            this.posSide = element2
-            this.negSide = element1
-        }
-
-        if (element1.middlePos.getX > element2.middlePos.getX) {
-            this.leftSide = element2
-            this.rightSide = element1
-        }
-        else if (element1.middlePos.getX < element2.middlePos.getX) {
-            this.leftSide = element1
-            this.rightSide = element2
-        }
+        this.elementList = [element1, element2]
     }
 
-    applyVelocity(time, distance) {
+    applyLinkedVelocity(time, distance) {
         this.elementList.forEach((element) => {
             element.applyVelocity(time, distance)
         })
@@ -44,5 +26,48 @@ export default class Compound {
     addElement(element) {
         element.compound = this
         this.elementList.push(element)
+    }
+
+    /**
+     * @description returns the element that the closest to the given character
+     * @param {Character} character
+     */
+    getClosestElement(character) {
+        let x = character.middlePos.getX
+        let y = character.middlePos.getY
+
+        let low = undefined
+        let returnVal = undefined;
+        this.elementList.forEach((element) => {
+            let totalDistance = Math.abs(element.middlePos.getX - x) + Math.abs(element.middlePos.getY - y)
+            if (returnVal == undefined || totalDistance < low) {
+                low = totalDistance
+                returnVal = element
+            }
+        })
+
+        return returnVal
+    }
+
+    containsElement(element) {
+        return this.elementList.includes(element)
+    }
+
+    canMoveLeft() {
+        let retVal = true
+        this.elementList.forEach((element) => {
+            //console.log(element.moveLeft)
+            if (!element.moveLeft) retVal = false
+        })
+        return retVal
+    }
+
+    canMoveRight() {
+        let retVal = true
+        this.elementList.forEach((element) => {
+            //console.log(element.moveLeft)
+            if (!element.moveRight) retVal = false
+        })
+        return retVal
     }
 }

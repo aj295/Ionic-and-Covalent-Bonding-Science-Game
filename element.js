@@ -40,7 +40,7 @@ export default class Element extends Character {
         this.compound = undefined //points to the compound this element is a part of, undefined if it is not part of a compound
     }
     
-    aroundElectron() {
+    elementMovement() {
         this.level.characters.forEach(character => {
 
             let x1 = this.middlePos.getX
@@ -73,16 +73,22 @@ export default class Element extends Character {
             let xDistance = Math.abs(this.middlePos.getX - character.middlePos.getX)
             let yDistance = Math.abs(this.middlePos.getY - character.middlePos.getY)
 
-            if (xDistance <= character.width && xDistance != 0 && !character.isPlayer) { //two non-player elements colliding physics
-                //console.log(this instanceof Element)
-                // let newCompund = new Compound(this, character)
-                // this.compound = newCompund
-                // character.compound = newCompund
-                this.compound = new Compound(this, character)
-                character.compound = this.compound
-                return 0
+            if (xDistance <= character.width && xDistance != 0 && !character.isPlayer) {
+                if (this.compound == undefined) { //two non-player elements colliding physics
+                    let newCompund = new Compound(this, character)
+                    this.compound = newCompund
+                    character.compound = newCompund
+                    console.log(newCompund)
+                    console.log(character.compound)
+                    return 0
+                }
+                else if (this.compound != undefined && character.compound == undefined) {
+                    this.compound.addElement(character)
+                    return 0
+                }
             }
-            else if (xDistance < 10 && xDistance != 0 && character.isPlayer) {
+
+            if (xDistance < stopDistance && xDistance != 0 && character.isPlayer) {
                 //console.log("collided  with player")
                 //put end game logic here <--
             }
@@ -94,21 +100,19 @@ export default class Element extends Character {
 
             // console.log(xDistance)
             // console.log(yDistance)
-            if ((xDistance <= range && xDistance > 0) && (yDistance <= range)) { //checks if the electrons are within a certain range of pixels
+            if ((xDistance <= range && (xDistance > 0 || (this.compound != undefined && character.compound != undefined))) && (yDistance <= range)) { //checks if the electrons are within a certain range of pixels
                 let pullTogether = false
                 let pushApart = false
-                let toLeft = this.middlePos.getX < character.middlePos.getX
-                let toRight = this.middlePos.getX > character.middlePos.getX
-                //console.log((toLeft) ? "left" : "right")
 
-
-                if ((character.isPlayer || character instanceof Element) && (this.compound == undefined)) {
-                    pullTogether = (character.isPlayer && this.positive) || ((character.negative && this.positive) || (character.positive && this.negative))
-                    pushApart = (character.isPlayer && this.negative) || ((character.positive && this.positive) || (character.negative && this.negative))
+                if ((character.isPlayer || character instanceof Element) && this.compound == undefined) {
+                    let oppositeCharge = (character.isPlayer && this.positive) || character.positive == this.negative
+                    pullTogether = oppositeCharge
+                    pushApart = !oppositeCharge
                 }
-                if ((character.isPlayer || character instanceof Element) && (this.compound != undefined)) {
-                    pullTogether = (toLeft && this.compound.leftSide.positive != character.negative) || (toRight && this.compound.rightSide.positive != character.negative)
-                    pullTogether = (toLeft && this.compound.leftSide.positive == character.negative) || (toRight && this.compound.rightSide.positive == character.negative)
+                else if (!this.compound.containsElement(character)) {
+                    let oppositeCharge = (character.isPlayer && this.compound.getClosestElement(character).positive) || character.positive == this.compound.getClosestElement(character).negative
+                    pullTogether = oppositeCharge
+                    pushApart = !oppositeCharge
                 }
 
                 if (pullTogether) {
@@ -117,22 +121,29 @@ export default class Element extends Character {
 
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy > 0) vy = 0
 
-                    if (!(character.isGrounded() && vy > 0)) character.applyVelocity(1, [-vx, -vy / 2])
-                    else character.applyVelocity(1, [-vx, 0])
+                    character.applyVelocity(1, [-vx, -vy / 2])
 
-                    if (character.compound == undefined) this.applyVelocity(MOVING_FRAMES, [vx, -vy])
-                    else character.compound.applyVelocity(MOVING_FRAMES, [vx, vy])
+                    if ((character.compound == undefined && this.compound == undefined)) this.applyVelocity(MOVING_FRAMES, [vx, -vy])
+                    else if (!this.compound.containsElement(character)) {
+                        if (!this.compound.canMoveLeft() && vx < 0) vx = 0
+                        if (!this.compound.canMoveRight() && vx > 0) vx = 0
+                        this.compound.applyLinkedVelocity(MOVING_FRAMES, [vx, -vy])
+                    }
                 }
                 else if (pushApart) {
-                    if (!(character.isGrounded() && vy > 0)) character.applyVelocity(1, [vx, vy / 2])
-                    else character.applyVelocity(1, [vx, 0])
-
-                    if (distance < MULTIPLIER / 2) vx = -vx * distance
-
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy < 0) vy = 0
+                    character.applyVelocity(MOVING_FRAMES, [vx, vy / 2])
 
-                    if (character.compound == undefined) this.applyVelocity(MOVING_FRAMES, [-vx, vy])
-                    else character.compound.applyVelocity(MOVING_FRAMES, [-vx, vy])
+                    if (Math.abs(this.middlePos.getX - character.middlePos.getX) < MULTIPLIER / 2 && (!character.moveLeft || !character.moveRight)) this.applyVelocity(MOVING_FRAMES, [-vx * 10, 0])
+
+                    if ((character.compound == undefined && this.compound == undefined)) this.applyVelocity(MOVING_FRAMES, [-vx, vy])
+                    else if (!this.compound.containsElement(character)) {
+                        console.log(this.compound.canMoveLeft())
+                        if (Math.abs(this.compound.getClosestElement(character).middlePos.getX - this.middlePos.getX) < MULTIPLIER / 2 && (!this.compound.canMoveLeft() || !this.compound.canMoveRight())) {vx = 0; vy = 0}
+                        if (!this.compound.canMoveLeft() && vx > 0) vx = 0
+                        if (!this.compound.canMoveRight() && vx < 0) vx = 0
+                        this.compound.applyLinkedVelocity(MOVING_FRAMES, [-vx, vy])
+                    }
                 }
             }
         });
@@ -147,6 +158,6 @@ export default class Element extends Character {
         this.draw()
         this.applyGravity()
         this.collisionPhysics()
-        this.aroundElectron()
+        this.elementMovement()
     }
 }
