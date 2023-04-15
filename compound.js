@@ -10,7 +10,28 @@ export default class Compound {
     constructor(element1, element2) {
         element1.compound = this
         element2.compound = this
+
+        /**
+         * compound electonegativity
+         */
+        this.compoundEN = Math.abs(element1.electronegativity - element2.electronegativity) 
+
         this.elementList = [element1, element2]
+
+        this.compoundCharge = element1.ionCharge + element2.ionCharge
+
+        if (this.compoundCharge < 0) {
+            this.positive = false
+            this.negative = true
+        }
+        else if (this.compoundCharge > 0) {
+            this.positive = true
+            this.negative = false
+        }
+        else {
+            this.positive = false
+            this.negative = false
+        }
     }
 
     applyLinkedVelocity(time, distance) {
@@ -26,6 +47,7 @@ export default class Compound {
     addElement(element) {
         element.compound = this
         this.elementList.push(element)
+        this.updateCharge(element)
     }
 
     /**
@@ -69,5 +91,25 @@ export default class Compound {
             if (!element.moveRight) retVal = false
         })
         return retVal
+    }
+
+    updateCharge(element) {
+        let additionalCharge = element.ionCharge
+        this.compoundCharge += additionalCharge
+
+        if (this.compoundCharge < 0) {
+            this.positive = false
+            this.negative = true
+        }
+        else if (this.compoundCharge > 0) {
+            this.positive = true
+            this.negative = false
+        }
+        else {
+            this.positive = false
+            this.negative = false
+        }
+
+        this.compoundEN = Math.abs(this.compoundEN - element.electronegativity)
     }
 }

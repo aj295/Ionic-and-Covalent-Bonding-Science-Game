@@ -329,6 +329,11 @@ export default class Character {
         this.draw()
     }
 
+    remove() {
+        this.level.characters.splice(this.level.characters.indexOf(this), 1)
+        this.context.clearRect(this.xpos, this.ypos, this.width, this.height)
+    }
+
     /**
      * @description method to be ran every frame
      */

@@ -1,6 +1,5 @@
 import Character from "./character/character.js"
 import Compound from "./compound.js"
-import { fps } from "./script.js"
 
 let window_height = window.screen.height
 let window_width = window.screen.width
@@ -93,9 +92,8 @@ export default class Element extends Character {
                 //put end game logic here <--
             }
 
-            let range = 600
+            let range = (this.compound != undefined && this.compound.compoundCharge == 0) ? 200 : 600
             const MUTLI_FACTOR = 100 //higher number makes the element move faster in general
-            const EXPONENTIAL_FACTOR = 0.45 //lower number makes elements speed up as they get closer together
             const MOVING_FRAMES = 1 //the amount of animation frames the velocity is applied - more frames = smoother movement for more lag and faster movement
 
             // console.log(xDistance)
@@ -110,21 +108,31 @@ export default class Element extends Character {
                     pushApart = !oppositeCharge
                 }
                 else if (!this.compound.containsElement(character)) {
-                    let oppositeCharge = (character.isPlayer && this.compound.getClosestElement(character).positive) || character.positive == this.compound.getClosestElement(character).negative
-                    pullTogether = oppositeCharge
-                    pushApart = !oppositeCharge
+                        let oppositeCharge = (character.isPlayer && this.compound.getClosestElement(character).positive) || character.positive == this.compound.getClosestElement(character).negative
+                        pullTogether = oppositeCharge
+                        pushApart = !oppositeCharge
                 }
 
                 if (pullTogether) {
-                    vx *= this.electronegativity
-                    vy *= this.electronegativity
+                    if (this.compound == undefined) {
+                        vx *= this.electronegativity
+                        vy *= this.electronegativity
+                    }
+                    else {
+                        vx *= this.compound.compoundEN * 0.07
+                        vy *= this.compound.compoundEN * 0.07
+                        console.log(this.compound.compoundEN)
+                    }
 
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy > 0) vy = 0
 
-                    character.applyVelocity(1, [-vx, -vy / 2])
+                    if (character.compound == undefined) character.applyVelocity(1, [-vx, -vy / 2])
+                    else {
+                        character.compound.applyLinkedVelocity(MOVING_FRAMES, [-vx, -vy / 2])
+                    }
 
                     if ((character.compound == undefined && this.compound == undefined)) this.applyVelocity(MOVING_FRAMES, [vx, -vy])
-                    else if (!this.compound.containsElement(character)) {
+                    else if (this.compound != undefined) {
                         if (!this.compound.canMoveLeft() && vx < 0) vx = 0
                         if (!this.compound.canMoveRight() && vx > 0) vx = 0
                         this.compound.applyLinkedVelocity(MOVING_FRAMES, [vx, -vy])
@@ -132,13 +140,16 @@ export default class Element extends Character {
                 }
                 else if (pushApart) {
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy < 0) vy = 0
-                    character.applyVelocity(MOVING_FRAMES, [vx, vy / 2])
+
+                    if (character.compound == undefined) character.applyVelocity(MOVING_FRAMES, [vx, vy / 2])
+                    else {
+                        character.compound.applyLinkedVelocity(MOVING_FRAMES, [vx, vy / 2])
+                    }
 
                     if (Math.abs(this.middlePos.getX - character.middlePos.getX) < MULTIPLIER / 2 && (!character.moveLeft || !character.moveRight)) this.applyVelocity(MOVING_FRAMES, [-vx * 10, 0])
 
                     if ((character.compound == undefined && this.compound == undefined)) this.applyVelocity(MOVING_FRAMES, [-vx, vy])
-                    else if (!this.compound.containsElement(character)) {
-                        console.log(this.compound.canMoveLeft())
+                    else if (this.compound != undefined) {
                         if (Math.abs(this.compound.getClosestElement(character).middlePos.getX - this.middlePos.getX) < MULTIPLIER / 2 && (!this.compound.canMoveLeft() || !this.compound.canMoveRight())) {vx = 0; vy = 0}
                         if (!this.compound.canMoveLeft() && vx > 0) vx = 0
                         if (!this.compound.canMoveRight() && vx < 0) vx = 0
