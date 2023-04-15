@@ -299,6 +299,8 @@ export default class Character {
             let XVelocity = distance[0] / time
             let YVelocity = distance[1] / time
 
+            if (this.onGround && YVelocity < 0) YVelocity = 0 //prevents going through floor
+
             //console.log(XVelocity + ", " + YVelocity)
                 let updateThis = () => {
                 this.update(XVelocity, YVelocity)

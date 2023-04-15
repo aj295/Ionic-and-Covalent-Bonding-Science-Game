@@ -15,19 +15,20 @@ canvas.height = window_height
 canvas.width = window_width
 canvas.style.background = "teal"
 
-let level1 = new Level(1)
+
+const characterHeight = 50
+let level1 = new Level(1, [window_width/2, window_height - characterHeight])
 
 let electron = new spriteMap("./Sprites/negative.png", 0.5)
 let positive = new spriteMap("./Sprites/positive.png", 0.5)
 
-const characterHeight = 50
 let character = new Character(ctx, level1, electron, window_width/2, window_height - characterHeight, 0.01)
 character.draw()
 
 let characterController = new CharacterController(character, 1.2, 300, 4)
 characterController.startControllerInput("Space", "KeyA", "KeyD", "ShiftLeft")
 
-let element = new Element(ctx, level1, -1, 4, electron, window_width - 1000, window_height - characterHeight)
+let element = new Element(ctx, level1, -1, 0.9, electron, window_width - 1000, window_height - characterHeight)
 element.draw()
 
 let element2 = new Element(ctx, level1, 1, 0.9, positive, 20, window_height - characterHeight - 100)

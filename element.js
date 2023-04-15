@@ -50,7 +50,7 @@ export default class Element extends Character {
 
             let distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
 
-            let MULTIPLIER = 200
+            let MULTIPLIER = 150
             let k = MULTIPLIER * distance
             let acceleration = k / Math.pow(distance, 2)
 
@@ -87,12 +87,13 @@ export default class Element extends Character {
                 }
             }
 
-            if (xDistance < stopDistance && xDistance != 0 && character.isPlayer) {
+            if (xDistance < stopDistance && xDistance != 0 && character.isPlayer && yDistance < stopDistance) {
                 //console.log("collided  with player")
                 //put end game logic here <--
+                character.setPos(character.level.beginningPos[0], character.level.beginningPos[1])
             }
 
-            let range = (this.compound != undefined && this.compound.compoundCharge == 0) ? 200 : 600
+            let range = 600
             const MUTLI_FACTOR = 100 //higher number makes the element move faster in general
             const MOVING_FRAMES = 1 //the amount of animation frames the velocity is applied - more frames = smoother movement for more lag and faster movement
 
@@ -108,25 +109,18 @@ export default class Element extends Character {
                     pushApart = !oppositeCharge
                 }
                 else if (!this.compound.containsElement(character)) {
-                        let oppositeCharge = (character.isPlayer && this.compound.getClosestElement(character).positive) || character.positive == this.compound.getClosestElement(character).negative
-                        pullTogether = oppositeCharge
-                        pushApart = !oppositeCharge
+                    let oppositeCharge = (character.isPlayer && this.compound.getClosestElement(character).positive) || character.positive == this.compound.getClosestElement(character).negative
+                    pullTogether = oppositeCharge
+                    pushApart = !oppositeCharge
                 }
 
                 if (pullTogether) {
-                    if (this.compound == undefined) {
-                        vx *= this.electronegativity
-                        vy *= this.electronegativity
-                    }
-                    else {
-                        vx *= this.compound.compoundEN * 0.07
-                        vy *= this.compound.compoundEN * 0.07
-                        console.log(this.compound.compoundEN)
-                    }
+                    vx *= this.electronegativity
+                    vy *= this.electronegativity
 
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy > 0) vy = 0
 
-                    if (character.compound == undefined) character.applyVelocity(1, [-vx, -vy / 2])
+                    if (character.compound == undefined) character.applyVelocity(MOVING_FRAMES, [-vx, -vy / 2])
                     else {
                         character.compound.applyLinkedVelocity(MOVING_FRAMES, [-vx, -vy / 2])
                     }
