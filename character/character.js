@@ -299,6 +299,25 @@ export default class Character {
             let XVelocity = distance[0] / time
             let YVelocity = distance[1] / time
 
+            if (YVelocity > 0) {
+                if (XVelocity > 0) {
+                    this.sprite = this.spriteMap.upRightFacing
+                }
+                else if (XVelocity < 0) {
+                    this.sprite = this.spriteMap.upLeftFacing
+                }
+                else {
+                    this.sprite = this.spriteMap.upFacing
+                }
+            }
+
+            if (XVelocity > 0) {
+                this.sprite = this.spriteMap.rightFacing
+            }
+            else if (XVelocity < 0) {
+                this.sprite = this.spriteMap.leftFacing
+            }
+
             if (this.onGround && YVelocity < 0) YVelocity = 0 //prevents going through floor
 
             //console.log(XVelocity + ", " + YVelocity)

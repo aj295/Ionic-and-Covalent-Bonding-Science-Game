@@ -1,5 +1,6 @@
 import Character from "./character/character.js"
 import Compound from "./compound.js"
+import Photon from "./photon.js"
 
 let window_height = window.screen.height
 let window_width = window.screen.width
@@ -41,6 +42,7 @@ export default class Element extends Character {
     
     elementMovement() {
         this.level.characters.forEach(character => {
+            if (character instanceof Photon) return 0
 
             let x1 = this.middlePos.getX
             let y1 = this.middlePos.getY
@@ -77,8 +79,6 @@ export default class Element extends Character {
                     let newCompund = new Compound(this, character)
                     this.compound = newCompund
                     character.compound = newCompund
-                    console.log(newCompund)
-                    console.log(character.compound)
                     return 0
                 }
                 else if (this.compound != undefined && character.compound == undefined) {

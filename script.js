@@ -4,6 +4,7 @@ import CharacterController from "./character/characterController.js"
 import spriteMap from "./character/spriteMap.js"
 import Element from "./element.js"
 import Level from "./level.js"
+import Photon from "./photon.js"
 
 const canvas = document.getElementById("canvas")
 const ctx = canvas.getContext("2d")
@@ -21,6 +22,9 @@ let level1 = new Level(1, [window_width/2, window_height - characterHeight])
 
 let electron = new spriteMap("./Sprites/negative.png", 1)
 let positive = new spriteMap("./Sprites/positive.png", 1)
+let photonSprite = new spriteMap("./Sprites/photonLeft.png", 3, "./Sprites/photonLeft.png", "./Sprites/photonRight.png")
+
+let photon = new Photon(ctx, level1, photonSprite, 100, 100)
 
 let character = new Character(ctx, level1, electron, window_width/2, window_height - characterHeight, 0.01)
 character.draw()
