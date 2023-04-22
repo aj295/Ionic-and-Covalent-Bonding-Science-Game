@@ -53,7 +53,7 @@ let level1Ini = function(thisLevel) {
     testFloorWithWall.draw()
 }
 
-let testLevel = new Level(1, [window_width/2, window_height - characterHeight], background, "./Level Backgrounds/first level background test jpeg.jpg", level1Ini)
+let testLevel = new Level(1, [window_width/2, window_height - characterHeight], background, "./epic background.jpg", level1Ini)
 currentLevel = testLevel
 
 let tick = () => {
