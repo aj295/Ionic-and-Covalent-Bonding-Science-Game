@@ -2,10 +2,12 @@
     box-sizing: border-box;
 }
 
-html, body, canvas {
+html, body, canvas, img {
     width: 100%;
     height: 100%;
     margin: 0%;
     overflow: hidden;
+    position: fixed;
 }
+
 

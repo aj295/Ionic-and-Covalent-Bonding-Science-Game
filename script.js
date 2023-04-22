@@ -8,63 +8,63 @@ import Photon from "./photon.js"
 
 const canvas = document.getElementById("canvas")
 const ctx = canvas.getContext("2d")
+const electron = new spriteMap("./Sprites/negative.png", 1)
+const positive = new spriteMap("./Sprites/positive.png", 1)
+const photonSprite = new spriteMap("./Sprites/photonLeft.png", 3, "./Sprites/photonLeft.png", "./Sprites/photonRight.png")
+const characterHeight = 50
+const background = document.getElementById("backgroundImage")
 
 let window_height = window.screen.height
 let window_width = window.screen.width
+let currentLevel = undefined
 
 canvas.height = window_height
 canvas.width = window_width
-canvas.style.background = "teal"
+canvas.style.background = "transparent"
+
+let level1Ini = function(thisLevel) {
+    console.log("begin level")
+
+    let windowLeftBounds = new Line(0, 0, 0, window_height, ctx, thisLevel)
+    let windowRightBounds = new Line(window_width, 0, window_width, window_height, ctx, thisLevel)
+
+    let photon = new Photon(ctx, thisLevel, photonSprite, 100, 100)
+
+    let character = new Character(ctx, thisLevel, electron, window_width/2, window_height - characterHeight, 0.01)
+    character.draw()
+
+    let characterController = new CharacterController(character, 1.2, 300, 4)
+    characterController.startControllerInput("Space", "KeyA", "KeyD", "ShiftLeft")
+
+    let element = new Element(ctx, thisLevel, -1, 0.9, electron, window_width - 1000, window_height - characterHeight)
+    element.draw()
+
+    let element2 = new Element(ctx, thisLevel, 1, 0.9, positive, 20, window_height - characterHeight - 100)
+    element2.draw()
+
+    let element3 = new Element(ctx, thisLevel, 1, 0.9, positive, window_width - 400, window_height - characterHeight - 100)
+    element3.draw()
 
 
-const characterHeight = 50
-let level1 = new Level(1, [window_width/2, window_height - characterHeight])
+    let testFloor = new Line(10, window_height - 25, 500, window_height - 25, ctx, thisLevel)
+    testFloor.draw()
 
-let electron = new spriteMap("./Sprites/negative.png", 1)
-let positive = new spriteMap("./Sprites/positive.png", 1)
-let photonSprite = new spriteMap("./Sprites/photonLeft.png", 3, "./Sprites/photonLeft.png", "./Sprites/photonRight.png")
+    let testFloorWithWall = new Line(10, 100, 10, window_height - 25, ctx, thisLevel)
+    testFloorWithWall.draw()
+}
 
-let photon = new Photon(ctx, level1, photonSprite, 100, 100)
-
-let character = new Character(ctx, level1, electron, window_width/2, window_height - characterHeight, 0.01)
-character.draw()
-
-let characterController = new CharacterController(character, 1.2, 300, 4)
-characterController.startControllerInput("Space", "KeyA", "KeyD", "ShiftLeft")
-
-let element = new Element(ctx, level1, -1, 0.9, electron, window_width - 1000, window_height - characterHeight)
-element.draw()
-
-let element2 = new Element(ctx, level1, 1, 0.9, positive, 20, window_height - characterHeight - 100)
-element2.draw()
-
-let element3 = new Element(ctx, level1, 1, 0.9, positive, window_width - 400, window_height - characterHeight - 100)
-element3.draw()
-
-// let testElement = new Element(ctx, -1, "./Sprites/positive.png", 100, 100, 0.5)
-// testElement.draw()
-let windowLeftBounds = new Line(0, 0, 0, window_height, ctx, level1)
-let windowRightBounds = new Line(window_width, 0, window_width, window_height, ctx, level1)
-
-// let diagonal = new Line(1700, 100, 1100, window_height - 100, ctx, level1)
-// diagonal.draw()
-
-let testFloor = new Line(10, window_height - 25, 500, window_height - 25, ctx, level1)
-testFloor.draw()
-
-let testFloorWithWall = new Line(10, 100, 10, window_height - 25, ctx, level1)
-testFloorWithWall.draw()
+let testLevel = new Level(1, [window_width/2, window_height - characterHeight], background, "./Level Backgrounds/first level background test jpeg.jpg", level1Ini)
+currentLevel = testLevel
 
 let tick = () => {
     requestAnimationFrame(tick)
-    level1.tickLevel()
+    if (currentLevel != undefined) currentLevel.tickLevel()
 }
 
 window.addEventListener("keypress", (event) => {
     if (event.code == "KeyF") {
-        element2.remove()
-        element2 = null
-        console.log(element2)
+        console.log("debug key")
+        console.log(canvas.style.backgroundImage)
     }
 })
 

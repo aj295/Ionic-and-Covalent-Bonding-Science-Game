@@ -20,7 +20,7 @@ export default class Photon extends Character {
         this.directionY = Math.ceil((Math.random() * 2) - 1) //0 is for a negative direction, 1 is for a positive direction
         this.velX = (this.directionX == 0) ? -((Math.random() * RANDOM_MULTIPLIER) + RANDOM_ADDITIONAL) : (Math.random() * RANDOM_MULTIPLIER) + RANDOM_ADDITIONAL
         this.velY = (this.directionY == 0) ? -((Math.random() * RANDOM_MULTIPLIER) + RANDOM_ADDITIONAL) : (Math.random() * RANDOM_MULTIPLIER) + RANDOM_ADDITIONAL
-        console.log(this.velX)
+        //console.log(this.velX)
     }
 
     idleMoving() {

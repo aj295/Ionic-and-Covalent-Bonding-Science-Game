@@ -4,15 +4,17 @@ export default class Level {
      * @param {number} level the number of the current level 
      * @param {number[]} beginningPos the x and y coordinate pair that the character will begin at in the beginning of the level
      * @param {*} canvas the canvas object that the level will be on
-     * @param {String} backGroundImage the String path to the image of the background of this image
+     * @param {String} backGroundImage the html element of an image that will appear behind a transparent canvas to create a background image
+     * @param {} initializeLevel the function to run whenever beginning this level
      */
-    constructor(level, beginningPos, canvas, backGroundImage) {
+    constructor(level, beginningPos, backGroundElement, backGroundImage, initializeLevel) {
         this.level = level
         this.beginningPos = beginningPos
-        this.canvas = canvas
-        this.backGroundImage = backGroundImage
         this.collisionLines = []
         this.characters = []
+
+        backGroundElement.setAttribute("src", backGroundImage)
+        initializeLevel(this)
     }
 
     addCollisionLine(line) {
