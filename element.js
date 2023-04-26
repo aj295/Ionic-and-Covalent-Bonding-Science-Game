@@ -43,6 +43,11 @@ export default class Element extends Character {
     elementMovement() {
         this.level.characters.forEach(character => {
             if (character instanceof Photon) return 0
+            if (this.upperRight.getX >= character.xpos &&
+                this.xpos <= character.upperRight.getX &&
+                this.ypos < character.bottomLeft.getY &&
+                this.bottomLeft.getY > character.ypos) return 0 // returns 0 if the characters are colliding
+            if (character.compound != undefined && character.compound.containsElement(this)) return 0
 
             let x1 = this.middlePos.getX
             let y1 = this.middlePos.getY
@@ -115,9 +120,6 @@ export default class Element extends Character {
                 }
 
                 if (pullTogether) {
-                    vx *= this.electronegativity
-                    vy *= this.electronegativity
-
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy > 0) vy = 0
 
                     if (character.compound == undefined) character.applyVelocity(MOVING_FRAMES, [-vx, -vy / 2])
@@ -125,11 +127,11 @@ export default class Element extends Character {
                         character.compound.applyLinkedVelocity(MOVING_FRAMES, [-vx, -vy / 2])
                     }
 
-                    if ((character.compound == undefined && this.compound == undefined)) this.applyVelocity(MOVING_FRAMES, [vx, -vy])
+                    if ((character.compound == undefined && this.compound == undefined)) this.applyVelocity(MOVING_FRAMES, [vx * this.electronegativity, -vy * this.electronegativity])
                     else if (this.compound != undefined) {
                         if (!this.compound.canMoveLeft() && vx < 0) vx = 0
                         if (!this.compound.canMoveRight() && vx > 0) vx = 0
-                        this.compound.applyLinkedVelocity(MOVING_FRAMES, [vx, -vy])
+                        this.compound.applyLinkedVelocity(MOVING_FRAMES, [vx * this.compound.compoundEN, -vy * this.compound.compoundEN])
                     }
                 }
                 else if (pushApart) {

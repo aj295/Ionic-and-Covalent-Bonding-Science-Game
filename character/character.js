@@ -106,6 +106,16 @@ export default class Character {
         if (this.width > -1 && this.height > -1) this.context.drawImage(image, this.xpos, this.ypos, this.width, this.height)
         else this.context.drawImage(image, this.xpos, this.ypos, image.width * this.spriteMap.scale, image.height * this.spriteMap.scale)
         this.#declareCorners(image.width * this.spriteMap.scale, image.height * this.spriteMap.scale)
+
+        // let charDiv = document.createElement("div")
+        // let image = new Image()
+        // image.src = this.sprite
+        // charDiv.style.width = image.width * this.spriteMap.scale
+        // charDiv.style.height = image.height * this.spriteMap.scale
+        // charDiv.style.backgroundImage = "url(" + this.sprite + ")"
+        // charDiv.style.left = this.xpos + "px"
+        // charDiv.style.top = this.ypos + "px"
+        // this.#declareCorners(image.width * this.spriteMap.scale, image.height * this.spriteMap.scale)
     }
 
     /**

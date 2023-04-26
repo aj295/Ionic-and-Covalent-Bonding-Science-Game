@@ -79,6 +79,19 @@ export default class Level {
         return retValue
     }
 
+    collidingWithCharacter(x, y) {
+        let retValue = false
+        this.characters.forEach((char) => {
+            if (
+                x > char.get &&
+                x < char.bottomLeft.getX &&
+                y < char.bottomLeft.getY &&
+                y > char.getY
+            ) retValue = true
+        })
+        return retValue
+    }
+
     tickLevel() {
         this.characters.forEach((character) => {
             character.tickFunctions()
