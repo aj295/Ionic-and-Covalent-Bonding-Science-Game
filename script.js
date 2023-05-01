@@ -39,12 +39,11 @@ let level1Ini = function(thisLevel) {
     let element = new Element(ctx, thisLevel, -1, 0.9, electron, 600, window_height - characterHeight)
     element.draw()
 
-    let element2 = new Element(ctx, thisLevel, 1, 0.9, positive, 20, window_height - characterHeight - 100) 
+    let element2 = new Element(ctx, thisLevel, 1, 0.9, positive, 20, window_height - characterHeight - 100)
     element2.draw()
 
-    let element3 = new Element(ctx, thisLevel, 1, 0.9, positive, window_width - 400, window_height - characterHeight - 100)
+    let element3 = new Element(ctx, thisLevel, 1, 0.4, positive, window_width - 400, window_height - characterHeight - 100)
     element3.draw()
-
 
     let testFloor = new Line(10, window_height - 25, 500, window_height - 25, ctx, thisLevel)
     testFloor.draw()

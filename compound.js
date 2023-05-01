@@ -34,7 +34,17 @@ export default class Compound {
         }
     }
 
+    elementsColliding(element) { //doesn't work
+        let returnVal = false
+        this.elementList.forEach((obj) => {
+            if (element.isColliding(obj, 60)) returnVal = true
+        })
+
+        return returnVal
+    }
+
     applyLinkedVelocity(time, distance) {
+        if ((!this.canMoveLeft() && distance[0] < 0) || (!this.canMoveRight() && distance[0] > 0)) return 0
         this.elementList.forEach((element) => {
             element.applyVelocity(time, distance)
         })

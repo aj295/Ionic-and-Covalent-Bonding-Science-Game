@@ -265,30 +265,6 @@ export default class Character {
     }
 
     /**
-     * @description returns true if this character is collided with another character object !!!!!!!!!!!does not work - fix
-     * @param {Character} characterTest the character object to be tested with this character object
-     * @param {number} range the range in which the characters are considered "collided" default is zero
-     */
-    isCharCollided(characterTest, range) {
-        let topDist = Math.abs(this.upperLeft.getY - characterTest.bottomLeft.getY)
-        let bottomDist = Math.abs(this.bottomLeft.getY - characterTest.upperLeft.getY)
-        let leftDist = Math.abs(this.upperLeft.getX - characterTest.upperRight.getX)
-        let rightDist = Math.abs(this.upperRight.getX - characterTest.upperLeft.getX)
-
-        let topCollided = topDist <= range
-        let bottomCollided = bottomDist <= range
-        let leftCollided = leftDist <= range
-        let rightCollided = rightDist <= range
-
-        // console.log("topCollided " + topCollided)
-        // console.log("bottomCollided " + bottomCollided)
-        // console.log("leftCollided " + leftDist)
-        // console.log("rightCollided " + rightDist)
-
-        return topCollided || bottomCollided || leftCollided || rightCollided
-    }
-
-    /**
      * @description offsets the characters y position downwards if the method .isGrounded() returns false
      */
     applyGravity() {
@@ -358,6 +334,16 @@ export default class Character {
         this.spriteMap = spriteMap
         this.sprite = spriteMap.idle
         this.draw()
+    }
+
+    isColliding(character) {
+        if (
+            this.upperRight.getX >= character.xpos &&
+            this.xpos <= character.upperRight.getX &&
+            this.ypos <= character.bottomLeft.getY &&
+            this.bottomLeft.getY >= character.ypos
+        ) return true
+        else return false
     }
 
     remove() {

@@ -43,10 +43,9 @@ export default class Element extends Character {
     elementMovement() {
         this.level.characters.forEach(character => {
             if (character instanceof Photon) return 0
-            if (this.upperRight.getX >= character.xpos &&
-                this.xpos <= character.upperRight.getX &&
-                this.ypos < character.bottomLeft.getY &&
-                this.bottomLeft.getY > character.ypos) return 0 // returns 0 if the characters are colliding
+            if (this.isColliding(character)) {
+                    return 0
+                } // returns 0 if the characters are colliding
             if (character.compound != undefined && character.compound.containsElement(this)) return 0
 
             let x1 = this.middlePos.getX
@@ -79,16 +78,14 @@ export default class Element extends Character {
             let xDistance = Math.abs(this.middlePos.getX - character.middlePos.getX)
             let yDistance = Math.abs(this.middlePos.getY - character.middlePos.getY)
 
-            if (xDistance <= character.width && xDistance != 0 && !character.isPlayer) {
+            if (yDistance <=5 && xDistance <= character.width + stopDistance && xDistance != 0 && !character.isPlayer) {
                 if (this.compound == undefined) { //two non-player elements colliding physics
                     let newCompund = new Compound(this, character)
                     this.compound = newCompund
                     character.compound = newCompund
-                    return 0
                 }
                 else if (this.compound != undefined && character.compound == undefined) {
                     this.compound.addElement(character)
-                    return 0
                 }
             }
 
