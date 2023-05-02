@@ -281,41 +281,54 @@ export default class Character {
      * @param {number[]} distance an array with the x and y velocity values 
      */
     applyVelocity(time, distance) {
-        if (distance[0] != undefined && distance[1] != undefined) {
-            let XVelocity = distance[0] / time
-            let YVelocity = distance[1] / time
+        let applyVel = true
+        let isColliding = this.level.collidingWithCharacter(this) != undefined
+        if (isColliding) {
+            let collidingWith = this.level.collidingWithCharacter(this)
+            let toLeft = collidingWith.middlePos.getX < this.middlePos.getX
+            let toRight = !toLeft
+            // let above = collidingWith.middlePos.getY > this.middlePos.getY
+            // let below = !above
 
-            if (YVelocity > 0) {
+            if ((toLeft && distance[0] < 0) || (toRight && distance[0] > 0)/* || (above && distance[1] < 0) || (below && distance[1] > 0)*/) applyVel = false
+        }
+        if (applyVel) {
+            if (distance[0] != undefined && distance[1] != undefined) {
+                let XVelocity = distance[0] / time
+                let YVelocity = distance[1] / time
+
+                if (YVelocity > 0) {
+                    if (XVelocity > 0) {
+                        this.sprite = this.spriteMap.upRightFacing
+                    }
+                    else if (XVelocity < 0) {
+                        this.sprite = this.spriteMap.upLeftFacing
+                    }
+                    else {
+                        this.sprite = this.spriteMap.upFacing
+                    }
+                }
+
                 if (XVelocity > 0) {
-                    this.sprite = this.spriteMap.upRightFacing
+                    this.sprite = this.spriteMap.rightFacing
                 }
                 else if (XVelocity < 0) {
-                    this.sprite = this.spriteMap.upLeftFacing
+                    this.sprite = this.spriteMap.leftFacing
                 }
-                else {
-                    this.sprite = this.spriteMap.upFacing
-                }
-            }
 
-            if (XVelocity > 0) {
-                this.sprite = this.spriteMap.rightFacing
-            }
-            else if (XVelocity < 0) {
-                this.sprite = this.spriteMap.leftFacing
-            }
+                if (this.onGround && YVelocity < 0) YVelocity = 0 //prevents going through floor
 
-            if (this.onGround && YVelocity < 0) YVelocity = 0 //prevents going through floor
-
-            //console.log(XVelocity + ", " + YVelocity)
-                let updateThis = () => {
-                this.update(XVelocity, YVelocity)
-                time--
-                if (time > 0) requestAnimationFrame(updateThis)
-                }
-            updateThis()
-        }
-        else {
-            return -1
+                //console.log(XVelocity + ", " + YVelocity)
+                    let updateThis = () => {
+                    this.update(XVelocity, YVelocity)
+                    time--
+                    if (time > 0) requestAnimationFrame(updateThis)
+                    }
+                updateThis()
+            }
+            else {
+                return -1
+            }
         }
     }
 

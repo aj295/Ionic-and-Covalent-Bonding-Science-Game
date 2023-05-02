@@ -83,9 +83,11 @@ export default class Element extends Character {
                     let newCompund = new Compound(this, character)
                     this.compound = newCompund
                     character.compound = newCompund
+                    console.log("hi")
                 }
                 else if (this.compound != undefined && character.compound == undefined) {
                     this.compound.addElement(character)
+                    return 0
                 }
             }
 

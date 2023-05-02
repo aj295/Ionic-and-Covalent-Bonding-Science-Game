@@ -1,3 +1,5 @@
+import Photon from "./photon.js"
+
 export default class Level {
     /**
      * 
@@ -79,17 +81,13 @@ export default class Level {
         return retValue
     }
 
-    collidingWithCharacter(x, y) {
-        let retValue = false
+    collidingWithCharacter(character) {
+        let colliding = undefined
         this.characters.forEach((char) => {
-            if (
-                x > char.get &&
-                x < char.bottomLeft.getX &&
-                y < char.bottomLeft.getY &&
-                y > char.getY
-            ) retValue = true
+            if(!(char instanceof Photon) && (character != char && character.isColliding(char))) colliding = char
         })
-        return retValue
+        //if (character.isPlayer) console.log(colliding)
+        return colliding
     }
 
     tickLevel() {
