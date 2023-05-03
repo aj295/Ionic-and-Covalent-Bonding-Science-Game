@@ -47,6 +47,8 @@ export default class Character {
         this.characterController = undefined
 
         level.characters.push(this)
+
+        this.divElem = document.createElement("div")
     }
 
     /**
@@ -103,19 +105,21 @@ export default class Character {
         this.imageElement = image
         image.src = this.sprite
         image.id = this.id
-        if (this.width > -1 && this.height > -1) this.context.drawImage(image, this.xpos, this.ypos, this.width, this.height)
-        else this.context.drawImage(image, this.xpos, this.ypos, image.width * this.spriteMap.scale, image.height * this.spriteMap.scale)
-        this.#declareCorners(image.width * this.spriteMap.scale, image.height * this.spriteMap.scale)
+        this.divElem.appendChild(image)
+        if (this.width > -1 && this.height > -1) {
+            this.divElem.style.width = this.width + "px"
+            this.divElem.style.height = this.height + "px"
+        }
+        else {
+            this.divElem.style.width = image.width * this.spriteMap.scale + "px"
+            this.divElem.style.height = image.height * this.spriteMap.scale + "px"
+        }
 
-        // let charDiv = document.createElement("div")
-        // let image = new Image()
-        // image.src = this.sprite
-        // charDiv.style.width = image.width * this.spriteMap.scale
-        // charDiv.style.height = image.height * this.spriteMap.scale
-        // charDiv.style.backgroundImage = "url(" + this.sprite + ")"
-        // charDiv.style.left = this.xpos + "px"
-        // charDiv.style.top = this.ypos + "px"
-        // this.#declareCorners(image.width * this.spriteMap.scale, image.height * this.spriteMap.scale)
+        this.divElem.style.setProperty("left", this.xpos + "px")
+        this.divElem.style.setProperty("top", this.ypos + "px")
+        image.style.objectFit = "cover"
+        document.body.appendChild(this.divElem)
+        this.#declareCorners(image.width * this.spriteMap.scale, image.height * this.spriteMap.scale)
     }
 
     /**
@@ -180,16 +184,12 @@ export default class Character {
         if (!this.moveRight && offSetX > 0) offSetX = 0
         if (!this.moveUp && offSetY > 0) offSetY = 0
         
-        this.context.clearRect(this.xpos, this.ypos, this.width, this.height)
-        
         let updateCornerList = [this.bottomLeft, this.bottomRight, this.upperLeft, this.upperRight, this.middleBottom]
 
         this.xpos += offSetX
         this.ypos -= offSetY
 
         updateCornerList.forEach((item) => {item.getX += offSetX; item.getY -= offSetY}) 
-
-        this.draw()
     }
 
     /**
