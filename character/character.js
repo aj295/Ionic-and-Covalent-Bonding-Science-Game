@@ -115,8 +115,8 @@ export default class Character {
             this.divElem.style.height = image.height * this.spriteMap.scale + "px"
         }
 
-        this.divElem.style.setProperty("left", this.xpos + "px")
-        this.divElem.style.setProperty("top", this.ypos + "px")
+        this.divElem.style.left = this.xpos + "px"
+        this.divElem.style.top = this.ypos + "px"
         image.style.objectFit = "cover"
         document.body.appendChild(this.divElem)
         this.#declareCorners(image.width * this.spriteMap.scale, image.height * this.spriteMap.scale)
