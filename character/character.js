@@ -275,6 +275,10 @@ export default class Character {
         else this.airTime = 0
     }
 
+    test() {
+        console.log("this is a test")
+    }
+
     /**
      * @description offset the character's x and y values with the distance parameter over a certain amount of time
      * @param {number} time 
