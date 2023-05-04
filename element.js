@@ -14,13 +14,11 @@ let window_width = window.screen.width
      * @param {Level} level the current level of the character
      * @param {number} xpos origin x position of the character
      * @param {number} ypos origin y position of the character
-     * @param {number} width width of character, if not specified automatic width is used
-     * @param {number} height height of character, if not specified automatic height is used
      * @param {number} gravity effects how fast or slow the character falls
      */
 export default class Element extends Character {
-    constructor(context, level, ionCharge, electronegativity, spriteMap, xpos, ypos, gravity = 0.03, width = -1, height = -1) {
-        super(context, level, spriteMap, xpos, ypos, gravity, width, height)
+    constructor(context, level, ionCharge, electronegativity, spriteMap, xpos, ypos, stylesClass, gravity = 0.03) {
+        super(context, level, spriteMap, xpos, ypos, stylesClass, gravity)
         this.ionCharge = ionCharge
         if (ionCharge < 0) {
             this.positive = false

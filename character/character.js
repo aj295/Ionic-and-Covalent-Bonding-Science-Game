@@ -10,17 +10,15 @@ export default class Character {
      * @param {Level} level the current level of the character
      * @param {number} xpos origin x position of the character
      * @param {number} ypos origin y position of the character
-     * @param {number} width width of character, if not specified automatic width is used
-     * @param {number} height height of character, if not specified automatic height is used
+     * @param {String} stylesClass name of the css styles class that goes with this character
      * @param {number} gravity effects how fast or slow the character falls
      */
-    constructor(context, level, spriteMap, xpos, ypos, gravity = 0.03, width = -1, height = -1) {
+    constructor(context, level, spriteMap, xpos, ypos, stylesClass, gravity = 0.03) {
         this.context = context
         this.xpos = xpos
         this.ypos = ypos
         this.spriteMap = spriteMap
-        this.width = width
-        this.height = height
+        this.stylesClass = stylesClass
         this.level = level
         this.sprite = spriteMap.idle
 
@@ -49,6 +47,7 @@ export default class Character {
         level.characters.push(this)
 
         this.divElem = document.createElement("div")
+        this.imageElement = document.createElement("img")
     }
 
     /**
@@ -101,25 +100,23 @@ export default class Character {
      * @description draws character onto screen
      */
     draw() {
-        let image = document.createElement("img")
-        this.imageElement = image
-        image.src = this.sprite
-        image.id = this.id
-        this.divElem.appendChild(image)
-        if (this.width > -1 && this.height > -1) {
-            this.divElem.style.width = this.width + "px"
-            this.divElem.style.height = this.height + "px"
-        }
-        else {
-            this.divElem.style.width = image.width * this.spriteMap.scale + "px"
-            this.divElem.style.height = image.height * this.spriteMap.scale + "px"
-        }
+        this.imageElement.src = this.sprite
+        this.imageElement.id = this.id
+        document.body.appendChild(this.divElem)
+        this.divElem.appendChild(this.imageElement)
 
+        this.divElem.classList.add(this.stylesClass)
         this.divElem.style.left = this.xpos + "px"
         this.divElem.style.top = this.ypos + "px"
-        image.style.objectFit = "cover"
-        document.body.appendChild(this.divElem)
-        this.#declareCorners(image.width * this.spriteMap.scale, image.height * this.spriteMap.scale)
+
+        this.imageElement.style.width = "inherit"
+        this.imageElement.style.height = "inherit"
+        this.imageElement.style.left = "inherit"
+        this.imageElement.style.top = "inherit"
+
+        let divStyle = window.getComputedStyle(this.divElem)
+        console.log(divStyle.getPropertyValue("width").replace(/[^0-9]/g,""))
+        this.#declareCorners(parseInt(divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
     }
 
     /**
@@ -170,7 +167,8 @@ export default class Character {
             coordinateList: [this.xpos + (this.width / 2), this.ypos - (this.height / 2)]
         }
 
-        this.draw()
+        this.divElem.style.left = this.xpos
+        this.divElem.style.top = this.ypos
     }
 
     /**
@@ -188,6 +186,9 @@ export default class Character {
 
         this.xpos += offSetX
         this.ypos -= offSetY
+
+        this.divElem.style.left = this.xpos
+        this.divElem.style.top = this.xpos
 
         updateCornerList.forEach((item) => {item.getX += offSetX; item.getY -= offSetY}) 
     }

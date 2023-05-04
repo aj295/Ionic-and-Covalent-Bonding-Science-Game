@@ -30,19 +30,19 @@ let level1Ini = function(thisLevel) {
 
     let photon = new Photon(ctx, thisLevel, photonSprite, 100, 100)
 
-    let character = new Character(ctx, thisLevel, electron, window_width/2, window_height - characterHeight, 0.01)
+    let character = new Character(ctx, thisLevel, electron, window_width/2, window_height - characterHeight - 1000, "elemAndElectron", 0.01)
     character.draw()
 
     let characterController = new CharacterController(character, 1.2, 300, 4)
     characterController.startControllerInput("Space", "KeyA", "KeyD", "ShiftLeft")
 
-    let element = new Element(ctx, thisLevel, -1, 0.9, electron, 600, window_height - characterHeight)
+    let element = new Element(ctx, thisLevel, -1, 0.9, electron, 600, window_height - 1000, "elemAndElectron")
     element.draw()
 
-    let element2 = new Element(ctx, thisLevel, 2, 0.5, positive, 20, window_height - characterHeight - 100)
+    let element2 = new Element(ctx, thisLevel, 2, 0.5, positive, 20, window_height - characterHeight - 1000, "elemAndElectron")
     element2.draw()
 
-    let element3 = new Element(ctx, thisLevel, 2, 0.4, positive, window_width - 400, window_height - characterHeight - 100)
+    let element3 = new Element(ctx, thisLevel, 2, 0.4, positive, window_width - 400, window_height - characterHeight - 1000, "elemAndElectron")
     element3.draw()
 
     let testFloor = new Line(10, window_height - 25, 500, window_height - 25, ctx, thisLevel)
