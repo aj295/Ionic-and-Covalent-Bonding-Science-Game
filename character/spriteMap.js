@@ -10,9 +10,7 @@ export default class spriteMap {
      * @param {String} upLeftFacing the sprite to be loaded when the character faces up and to the left
      * @param {String} upRightFacing the sprite to be loaded when the character faces up and to the right
      */
-    constructor(idle, scale = 1, leftFacing = idle, rightFacing = idle, upFacing = idle, downFacing = idle, upLeftFacing = upFacing, upRightFacing = upFacing) {
-        this.scale = scale
-
+    constructor(idle, leftFacing = idle, rightFacing = idle, upFacing = idle, downFacing = idle, upLeftFacing = upFacing, upRightFacing = upFacing) {
         this.idle = idle
         this.leftFacing = leftFacing
         this.rightFacing = rightFacing

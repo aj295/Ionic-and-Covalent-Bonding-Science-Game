@@ -7,8 +7,8 @@ const RANDOM_MULTIPLIER = 0.5
 const RANDOM_ADDITIONAL = 0.2
 
 export default class Photon extends Character {
-    constructor(context, level, spriteMap, xpos, ypos, gravity = 0.03, width = -1, height = -1) {
-        super(context, level, spriteMap, xpos, ypos, gravity, width, height)
+    constructor(context, level, spriteMap, xpos, ypos, stylesClass, gravity = 0.03) {
+        super(context, level, spriteMap, xpos, ypos, stylesClass, gravity)
         this.directionX = Math.ceil((Math.random() * 2) - 1) //calculates a random number of 0 or 1
         this.directionY = Math.ceil((Math.random() * 2) - 1) //0 is for a negative direction, 1 is for a positive direction
         this.velX = (this.directionX == 0) ? -((Math.random() * RANDOM_MULTIPLIER) + RANDOM_ADDITIONAL) : (Math.random() * RANDOM_MULTIPLIER) + RANDOM_ADDITIONAL
@@ -42,7 +42,11 @@ export default class Photon extends Character {
     }
 
     tickFunctions() {
-        this.draw()
+        if (this.init) {
+            this.draw()
+            this.init = false
+        }
+        this.updateDivPos()
         this.idleMoving()
     }
 }

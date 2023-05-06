@@ -158,8 +158,13 @@ export default class Element extends Character {
      * @description method to be ran every frame
      */
     tickFunctions() {
+        if (this.init) {
+            this.draw()
+            this.init = false
+        }
+
         this.onGround = this.isGrounded()
-        this.draw()
+        this.updateDivPos()
         this.applyGravity()
         this.collisionPhysics()
         this.elementMovement()

@@ -48,6 +48,8 @@ export default class Character {
 
         this.divElem = document.createElement("div")
         this.imageElement = document.createElement("img")
+
+        this.init = true
     }
 
     /**
@@ -114,9 +116,15 @@ export default class Character {
         this.imageElement.style.left = "inherit"
         this.imageElement.style.top = "inherit"
 
-        let divStyle = window.getComputedStyle(this.divElem)
-        console.log(divStyle.getPropertyValue("width").replace(/[^0-9]/g,""))
-        this.#declareCorners(parseInt(divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
+        this.divStyle = window.getComputedStyle(this.divElem)
+        this.imageStyle = window.getComputedStyle(this.imageElement)
+        console.log(parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
+        this.#declareCorners(parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
+    }
+
+    updateDivPos() {
+        this.divElem.style.left = this.xpos + "px"
+        this.divElem.style.top = this.ypos + "px"
     }
 
     /**
@@ -167,8 +175,6 @@ export default class Character {
             coordinateList: [this.xpos + (this.width / 2), this.ypos - (this.height / 2)]
         }
 
-        this.divElem.style.left = this.xpos
-        this.divElem.style.top = this.ypos
     }
 
     /**
@@ -186,9 +192,6 @@ export default class Character {
 
         this.xpos += offSetX
         this.ypos -= offSetY
-
-        this.divElem.style.left = this.xpos
-        this.divElem.style.top = this.xpos
 
         updateCornerList.forEach((item) => {item.getX += offSetX; item.getY -= offSetY}) 
     }
@@ -369,8 +372,20 @@ export default class Character {
      * @description method to be ran every frame
      */
     tickFunctions() {
+        if (this.init) {
+            this.draw()
+            this.init = false
+        }
+
+        //this.context.fillRect(this.bottomLeft.getX, this.bottomLeft.getY, 10, 10)
+        this.context.fillRect(this.xpos, this.ypos, parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
+        //this.context.fillRect(this.upperRight.getX, this.upperRight.getY, 10, 10)
+        //this.context.fillRect(this.bottomRight.getX, this.bottomRight.getY, 10, 10)
         this.onGround = this.isGrounded()
-        this.draw()
+
+        this.updateDivPos()
+        this.#declareCorners(parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
+
         this.applyGravity()
         this.collisionPhysics()
     }

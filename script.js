@@ -8,9 +8,9 @@ import Photon from "./photon.js"
 
 const canvas = document.getElementById("canvas")
 const ctx = canvas.getContext("2d")
-const electron = new spriteMap("./Sprites/negative.png", 1)
-const positive = new spriteMap("./Sprites/positive.png", 1)
-const photonSprite = new spriteMap("./Sprites/photonLeft.png", 3, "./Sprites/photonLeft.png", "./Sprites/photonRight.png")
+const electron = new spriteMap("./Sprites/negative.png")
+const positive = new spriteMap("./Sprites/positive.png")
+const photonSprite = new spriteMap("./Sprites/photonLeft.png", "./Sprites/photonLeft.png", "./Sprites/photonRight.png")
 const characterHeight = 50
 const background = document.getElementById("backgroundImage")
 
@@ -28,7 +28,7 @@ let level1Ini = function(thisLevel) {
     let windowLeftBounds = new Line(0, 0, 0, window_height, ctx, thisLevel)
     let windowRightBounds = new Line(window_width, 0, window_width, window_height, ctx, thisLevel)
 
-    let photon = new Photon(ctx, thisLevel, photonSprite, 100, 100)
+    let photon = new Photon(ctx, thisLevel, photonSprite, 100, 100, "photon")
 
     let character = new Character(ctx, thisLevel, electron, window_width/2, window_height - characterHeight - 1000, "elemAndElectron", 0.01)
     character.draw()

@@ -15,4 +15,7 @@ html, body, canvas, img {
     height: 50px;
 }
 
-
+.photon {
+    width: 150px;
+    height: 150px;
+}
