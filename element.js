@@ -17,8 +17,8 @@ let window_width = window.screen.width
      * @param {number} gravity effects how fast or slow the character falls
      */
 export default class Element extends Character {
-    constructor(context, level, ionCharge, electronegativity, spriteMap, xpos, ypos, stylesClass, gravity = 0.03) {
-        super(context, level, spriteMap, xpos, ypos, stylesClass, gravity)
+    constructor(level, ionCharge, electronegativity, spriteMap, xpos, ypos, stylesClass, gravity = 0.03) {
+        super(level, spriteMap, xpos, ypos, stylesClass, gravity)
         this.ionCharge = ionCharge
         if (ionCharge < 0) {
             this.positive = false
@@ -164,7 +164,6 @@ export default class Element extends Character {
         }
 
         this.onGround = this.isGrounded()
-        this.updateDivPos()
         this.applyGravity()
         this.collisionPhysics()
         this.elementMovement()

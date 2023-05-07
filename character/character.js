@@ -1,11 +1,10 @@
-let window_height = window.screen.height
-let window_width = window.screen.width
+let window_height = window.innerHeight
+let window_width = window.innerWidth
 let availableId = 1
 
 export default class Character {
     /**
      * 
-     * @param {*} context context of the canvas
      * @param {spriteMap} spriteMap the spriteMap object that declares the different poses of the character
      * @param {Level} level the current level of the character
      * @param {number} xpos origin x position of the character
@@ -13,8 +12,7 @@ export default class Character {
      * @param {String} stylesClass name of the css styles class that goes with this character
      * @param {number} gravity effects how fast or slow the character falls
      */
-    constructor(context, level, spriteMap, xpos, ypos, stylesClass, gravity = 0.03) {
-        this.context = context
+    constructor(level, spriteMap, xpos, ypos, stylesClass, gravity = 0.03) {
         this.xpos = xpos
         this.ypos = ypos
         this.spriteMap = spriteMap
@@ -50,6 +48,9 @@ export default class Character {
         this.imageElement = document.createElement("img")
 
         this.init = true
+
+        this.width = 0
+        this.height = 0
     }
 
     /**
@@ -118,13 +119,7 @@ export default class Character {
 
         this.divStyle = window.getComputedStyle(this.divElem)
         this.imageStyle = window.getComputedStyle(this.imageElement)
-        console.log(parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
         this.#declareCorners(parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
-    }
-
-    updateDivPos() {
-        this.divElem.style.left = this.xpos + "px"
-        this.divElem.style.top = this.ypos + "px"
     }
 
     /**
@@ -133,48 +128,11 @@ export default class Character {
      * @param {number} y new y coordinate
      */
     setPos(x, y) {
-        //this.context.clearRect(0, 0, window_width, window_height)
-        // this.context.clearRect(this.xpos, this.ypos, this.bottomRight.getX, this.bottomRight.getY)
-
         this.xpos = x
         this.ypos = y
-
-        this.upperLeft = {
-            getX: this.xpos,
-            getY: this.ypos,
-            coordinateList: [this.xpos, this.ypos]
-        }
-
-        this.upperRight = {
-            getX: this.xpos + this.width,
-            getY: this.ypos,
-            coordinateList: [this.xpos + this.width, this.ypos]
-        }
-
-        this.bottomLeft = {
-            getX: this.xpos,
-            getY: this.ypos + this.height,
-            coordinateList: [this.xpos, this.ypos + this.height]
-        }
-
-        this.bottomRight = {
-            getX: this.xpos + this.width,
-            getY: this.ypos + this.height,
-            coordinateList: [this.xpos + this.width, this.ypos + this.height]
-        }
-
-        this.middleBottom = {
-            getX: this.xpos + (this.width / 2),
-            getY: this.ypos + this.height,
-            coordinateList: [this.xpos + (this.width / 2), this.ypos + this.height]
-        }
-
-        this.middlePos = {
-            getX: this.xpos + (this.width / 2),
-            getY: this.ypos - (this.height / 2),
-            coordinateList: [this.xpos + (this.width / 2), this.ypos - (this.height / 2)]
-        }
-
+        this.divElem.style.left = x + "px"
+        this.divElem.style.top = y + "px"
+        this.#declareCorners(parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
     }
 
     /**
@@ -188,12 +146,7 @@ export default class Character {
         if (!this.moveRight && offSetX > 0) offSetX = 0
         if (!this.moveUp && offSetY > 0) offSetY = 0
         
-        let updateCornerList = [this.bottomLeft, this.bottomRight, this.upperLeft, this.upperRight, this.middleBottom]
-
-        this.xpos += offSetX
-        this.ypos -= offSetY
-
-        updateCornerList.forEach((item) => {item.getX += offSetX; item.getY -= offSetY}) 
+        this.setPos(this.xpos + offSetX, this.ypos - offSetY)
     }
 
     /**
@@ -365,7 +318,6 @@ export default class Character {
 
     remove() {
         this.level.characters.splice(this.level.characters.indexOf(this), 1)
-        this.context.clearRect(this.xpos, this.ypos, this.width, this.height)
     }
 
     /**
@@ -377,14 +329,7 @@ export default class Character {
             this.init = false
         }
 
-        //this.context.fillRect(this.bottomLeft.getX, this.bottomLeft.getY, 10, 10)
-        this.context.fillRect(this.xpos, this.ypos, parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
-        //this.context.fillRect(this.upperRight.getX, this.upperRight.getY, 10, 10)
-        //this.context.fillRect(this.bottomRight.getX, this.bottomRight.getY, 10, 10)
         this.onGround = this.isGrounded()
-
-        this.updateDivPos()
-        this.#declareCorners(parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
 
         this.applyGravity()
         this.collisionPhysics()

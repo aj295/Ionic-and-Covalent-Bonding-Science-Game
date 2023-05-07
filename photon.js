@@ -1,14 +1,14 @@
 import Character from "./character/character.js";
 
-let window_height = window.screen.height
-let window_width = window.screen.width
+let window_height = window.innerHeight
+let window_width = window.innerWidth
 
 const RANDOM_MULTIPLIER = 0.5
 const RANDOM_ADDITIONAL = 0.2
 
 export default class Photon extends Character {
-    constructor(context, level, spriteMap, xpos, ypos, stylesClass, gravity = 0.03) {
-        super(context, level, spriteMap, xpos, ypos, stylesClass, gravity)
+    constructor(level, spriteMap, xpos, ypos, stylesClass, gravity = 0.03) {
+        super(level, spriteMap, xpos, ypos, stylesClass, gravity)
         this.directionX = Math.ceil((Math.random() * 2) - 1) //calculates a random number of 0 or 1
         this.directionY = Math.ceil((Math.random() * 2) - 1) //0 is for a negative direction, 1 is for a positive direction
         this.velX = (this.directionX == 0) ? -((Math.random() * RANDOM_MULTIPLIER) + RANDOM_ADDITIONAL) : (Math.random() * RANDOM_MULTIPLIER) + RANDOM_ADDITIONAL
@@ -46,7 +46,6 @@ export default class Photon extends Character {
             this.draw()
             this.init = false
         }
-        this.updateDivPos()
         this.idleMoving()
     }
 }
