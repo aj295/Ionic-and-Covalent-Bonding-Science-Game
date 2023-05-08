@@ -12,15 +12,12 @@ const photonSprite = new spriteMap("./Sprites/photonLeft.png", "./Sprites/photon
 const characterHeight = 50
 const background = document.getElementById("backgroundImage")
 
-let window_height = window.innerHeight
-let window_width = window.innerWidth
+export let window_height = window.innerHeight
+export let window_width = window.innerWidth
 let currentLevel = undefined
 
 let level1Ini = function(thisLevel) {
     console.log("begin level")
-
-    let windowLeftBounds = new Line(0, 0, 0, window_height, thisLevel)
-    let windowRightBounds = new Line(window_width, 0, window_width, window_height, thisLevel)
 
     let photon = new Photon(thisLevel, photonSprite, 100, 100, "photon")
 
@@ -57,6 +54,11 @@ window.addEventListener("keypress", (event) => {
         console.log("debug key")
         console.log(canvas.style.backgroundImage)
     }
+})
+
+window.addEventListener("resize", (event) => {
+    window_width = window.innerWidth
+    window_height = window.innerHeight
 })
 
 tick()

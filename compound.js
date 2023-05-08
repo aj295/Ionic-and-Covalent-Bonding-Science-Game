@@ -1,5 +1,5 @@
 import Character from "./character/character.js"
-import Element from "./element.js"
+import "./element.js"
 
 export default class Compound {
     /**

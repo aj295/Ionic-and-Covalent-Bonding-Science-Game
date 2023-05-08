@@ -1,5 +1,5 @@
-let window_height = window.screen.height
-let window_width = window.screen.width
+import { window_height } from "../script.js"
+import { window_width } from "../script.js"
 
 export default class Line {
     /**
@@ -25,19 +25,7 @@ export default class Line {
         }
     }
 
-    draw() {
-        this.ctx.strokeStyle = "red";
-        this.ctx.lineWidth = this.thickness;
-    
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.x1, this.y1);
-        this.ctx.lineTo(this.x2, this.y2);
-        this.ctx.stroke();
-    }
-
     update(x1, y1, x2, y2) {
-        this.ctx.clearLine(0, 0, window_width, window_height)
-        this.draw(this.ctx)
 
         this.x1 += x1
         this.y1 += y1
@@ -45,9 +33,5 @@ export default class Line {
         this.y2 += y2
         
         this.draw()
-    }
-
-    remove() {
-        this.ctx.clearLine(0, 0, window_width, window_height)
     }
 }

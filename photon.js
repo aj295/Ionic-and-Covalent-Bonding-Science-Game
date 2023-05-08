@@ -1,7 +1,7 @@
 import Character from "./character/character.js";
 
-let window_height = window.innerHeight
-let window_width = window.innerWidth
+import { window_height } from "../script.js"
+import { window_width } from "../script.js"
 
 const RANDOM_MULTIPLIER = 0.5
 const RANDOM_ADDITIONAL = 0.2
@@ -40,6 +40,8 @@ export default class Photon extends Character {
                 break
         }
     }
+
+    isColliding(character) {}
 
     tickFunctions() {
         if (this.init) {

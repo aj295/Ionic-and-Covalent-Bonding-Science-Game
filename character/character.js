@@ -1,5 +1,6 @@
-let window_height = window.innerHeight
-let window_width = window.innerWidth
+import { window_height } from "../script.js"
+import { window_width } from "../script.js"
+
 let availableId = 1
 
 export default class Character {
@@ -142,8 +143,8 @@ export default class Character {
      */
     update(offSetX, offSetY) {
 
-        if (!this.moveLeft && offSetX < 0) offSetX = 0 
-        if (!this.moveRight && offSetX > 0) offSetX = 0
+        if ((!this.moveLeft || this.xpos <= 0) && offSetX < 0) offSetX = 0 
+        if ((!this.moveRight || this.upperRight.getX >= window_width) && offSetX > 0) offSetX = 0
         if (!this.moveUp && offSetY > 0) offSetY = 0
         
         this.setPos(this.xpos + offSetX, this.ypos - offSetY)
@@ -256,21 +257,21 @@ export default class Character {
 
                 if (YVelocity > 0) {
                     if (XVelocity > 0) {
-                        this.sprite = this.spriteMap.upRightFacing
+                        this.imageElement.src = this.spriteMap.upRightFacing
                     }
                     else if (XVelocity < 0) {
-                        this.sprite = this.spriteMap.upLeftFacing
+                        this.imageElement.src = this.spriteMap.upLeftFacing
                     }
                     else {
-                        this.sprite = this.spriteMap.upFacing
+                        this.imageElement.src = this.spriteMap.upFacing
                     }
                 }
 
                 if (XVelocity > 0) {
-                    this.sprite = this.spriteMap.rightFacing
+                    this.imageElement.src = this.spriteMap.rightFacing
                 }
                 else if (XVelocity < 0) {
-                    this.sprite = this.spriteMap.leftFacing
+                    this.imageElement.src = this.spriteMap.leftFacing
                 }
 
                 if (this.onGround && YVelocity < 0) YVelocity = 0 //prevents going through floor

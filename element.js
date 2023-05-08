@@ -2,8 +2,8 @@ import Character from "./character/character.js"
 import Compound from "./compound.js"
 import Photon from "./photon.js"
 
-let window_height = window.screen.height
-let window_width = window.screen.width
+import { window_height } from "../script.js"
+import { window_width } from "../script.js"
 
 /**
      * 
