@@ -1,5 +1,4 @@
-import { window_height } from "../script.js"
-import { window_width } from "../script.js"
+//import { window_height, window_width } from "../script.js"
 
 export default class Line {
     /**
@@ -23,6 +22,12 @@ export default class Line {
         if (level != undefined) {
             level.addCollisionLine(this)
         }
+        // this.divElem = document.createElement("div")
+        // this.divElem.style.width = Math.abs(x1 - x2) + "px"
+        // this.divElem.style.height = Math.abs(y1 - y2) + "px"
+        // this.divElem.style.border = this.thickness + "px solid red"
+        // this.divElem.style.top = y1
+        // this.divElem.style.left = x1
     }
 
     update(x1, y1, x2, y2) {

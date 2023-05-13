@@ -3,8 +3,7 @@ let moveRight = false
 let crouched = false
 let jumping = false
 let awaitFall = false
-import { window_height } from "../script.js"
-import { window_width } from "../script.js"
+//import { window_height, window_width } from "../script.js"
 //effect how far the character is able to move along the x axis while in the air (greater number equals less movement in air)
 
 export default class characterController {

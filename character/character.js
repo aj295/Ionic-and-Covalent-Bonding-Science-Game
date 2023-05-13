@@ -1,5 +1,4 @@
-import { window_height } from "../script.js"
-import { window_width } from "../script.js"
+import { window_height, window_width } from "../script.js"
 
 let availableId = 1
 
@@ -19,7 +18,7 @@ export default class Character {
         this.spriteMap = spriteMap
         this.stylesClass = stylesClass
         this.level = level
-        this.sprite = spriteMap.idle
+        if (this.spriteMap != undefined) this.sprite = spriteMap.idle
 
         this.gravity = gravity
         this.airTime = 0
@@ -43,7 +42,7 @@ export default class Character {
         this.isPlayer = false
         this.characterController = undefined
 
-        level.characters.push(this)
+        level.addCharacter(this)
 
         this.divElem = document.createElement("div")
         this.imageElement = document.createElement("img")
@@ -59,7 +58,7 @@ export default class Character {
      * @param {number} width width of the character 
      * @param {number} height height of the character
      */
-    #declareCorners(width, height) {
+    declareCorners(width, height) {
         this.upperLeft = {
             getX: this.xpos,
             getY: this.ypos,
@@ -113,14 +112,18 @@ export default class Character {
         this.divElem.style.left = this.xpos + "px"
         this.divElem.style.top = this.ypos + "px"
 
-        this.imageElement.style.width = "inherit"
-        this.imageElement.style.height = "inherit"
-        this.imageElement.style.left = "inherit"
-        this.imageElement.style.top = "inherit"
+        this.divElem.style.position = "absolute"
+        this.imageElement.style.position = "relative"
+        this.imageElement.style.left = 0
+        this.imageElement.style.top = 0
+
+        this.divElem.style.border = "3px solid red"
+
+        console.log(this.divElem.children)
 
         this.divStyle = window.getComputedStyle(this.divElem)
         this.imageStyle = window.getComputedStyle(this.imageElement)
-        this.#declareCorners(parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
+        this.declareCorners(parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
     }
 
     /**
@@ -133,7 +136,7 @@ export default class Character {
         this.ypos = y
         this.divElem.style.left = x + "px"
         this.divElem.style.top = y + "px"
-        this.#declareCorners(parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
+        this.declareCorners(parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
     }
 
     /**
@@ -255,23 +258,25 @@ export default class Character {
                 let XVelocity = distance[0] / time
                 let YVelocity = distance[1] / time
 
-                if (YVelocity > 0) {
+                if (this.spriteMap != undefined) {
+                    if (YVelocity > 0) {
+                        if (XVelocity > 0) {
+                            this.imageElement.src = this.spriteMap.upRightFacing
+                        }
+                        else if (XVelocity < 0) {
+                            this.imageElement.src = this.spriteMap.upLeftFacing
+                        }
+                        else {
+                            this.imageElement.src = this.spriteMap.upFacing
+                        }
+                    }
+
                     if (XVelocity > 0) {
-                        this.imageElement.src = this.spriteMap.upRightFacing
+                        this.imageElement.src = this.spriteMap.rightFacing
                     }
                     else if (XVelocity < 0) {
-                        this.imageElement.src = this.spriteMap.upLeftFacing
+                        this.imageElement.src = this.spriteMap.leftFacing
                     }
-                    else {
-                        this.imageElement.src = this.spriteMap.upFacing
-                    }
-                }
-
-                if (XVelocity > 0) {
-                    this.imageElement.src = this.spriteMap.rightFacing
-                }
-                else if (XVelocity < 0) {
-                    this.imageElement.src = this.spriteMap.leftFacing
                 }
 
                 if (this.onGround && YVelocity < 0) YVelocity = 0 //prevents going through floor
@@ -317,9 +322,10 @@ export default class Character {
         else return false
     }
 
-    remove() {
-        this.level.characters.splice(this.level.characters.indexOf(this), 1)
-    }
+    // remove() {
+    //     this.level.characters.splice(this.level.characters.indexOf(this), 1)
+    //     this.divElem.remove()
+    // }
 
     /**
      * @description method to be ran every frame

@@ -1,9 +1,7 @@
 import Character from "./character/character.js"
-import Compound from "./compound.js"
 import Photon from "./photon.js"
 
-import { window_height } from "../script.js"
-import { window_width } from "../script.js"
+import { window_height, window_width } from "../script.js"
 
 /**
      * 
@@ -34,8 +32,6 @@ export default class Element extends Character {
         }
 
         this.electronegativity = electronegativity
-
-        this.compound = undefined //points to the compound this element is a part of, undefined if it is not part of a compound
     }
     
     elementMovement() {
@@ -43,8 +39,7 @@ export default class Element extends Character {
             if (character instanceof Photon) return 0
             if (this.isColliding(character)) {
                     return 0
-                } // returns 0 if the characters are colliding
-            if (character.compound != undefined && character.compound.containsElement(this)) return 0
+            } // returns 0 if the characters are colliding
 
             let x1 = this.middlePos.getX
             let y1 = this.middlePos.getY
@@ -77,14 +72,13 @@ export default class Element extends Character {
             let yDistance = Math.abs(this.middlePos.getY - character.middlePos.getY)
 
             if (yDistance <=5 && xDistance <= character.width + stopDistance && xDistance != 0 && !character.isPlayer) {
-                if (this.compound == undefined) { //two non-player elements colliding physics
-                    let newCompund = new Compound(this, character)
-                    this.compound = newCompund
-                    character.compound = newCompund
-                    console.log("hi")
+                if (this instanceof Element && character instanceof Element) { //two non-player elements colliding physics
+                    let newComp = new Compound(this, character)
+                    newComp.draw()
+                    this.level.addCharacter(newComp)
                 }
-                else if (this.compound != undefined && character.compound == undefined) {
-                    this.compound.addElement(character)
+                else if (this instanceof Compound && character instanceof Element) {
+                    this.addElement(character)
                     return 0
                 }
             }
@@ -105,13 +99,13 @@ export default class Element extends Character {
                 let pullTogether = false
                 let pushApart = false
 
-                if ((character.isPlayer || character instanceof Element) && this.compound == undefined) {
+                if ((character.isPlayer || character instanceof Element) && this instanceof Element) {
                     let oppositeCharge = (character.isPlayer && this.positive) || character.positive == this.negative
                     pullTogether = oppositeCharge
                     pushApart = !oppositeCharge
                 }
-                else if (!this.compound.containsElement(character)) {
-                    let oppositeCharge = (character.isPlayer && this.compound.getClosestElement(character).positive) || character.positive == this.compound.getClosestElement(character).negative
+                else if (this instanceof Compound && character instanceof Element) {
+                    let oppositeCharge = (character.isPlayer && this.getClosestPole(character) == "positive") || character.positive == this.getClosestPole(character) == "negative"
                     pullTogether = oppositeCharge
                     pushApart = !oppositeCharge
                 }
@@ -119,35 +113,17 @@ export default class Element extends Character {
                 if (pullTogether) {
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy > 0) vy = 0
 
-                    if (character.compound == undefined) character.applyVelocity(MOVING_FRAMES, [-vx, -vy / 2])
-                    else {
-                        character.compound.applyLinkedVelocity(MOVING_FRAMES, [-vx, -vy / 2])
-                    }
-
-                    if ((character.compound == undefined && this.compound == undefined)) this.applyVelocity(MOVING_FRAMES, [vx * this.electronegativity, -vy * this.electronegativity])
-                    else if (this.compound != undefined) {
-                        if (!this.compound.canMoveLeft() && vx < 0) vx = 0
-                        if (!this.compound.canMoveRight() && vx > 0) vx = 0
-                        this.compound.applyLinkedVelocity(MOVING_FRAMES, [vx * this.compound.compoundEN, -vy * this.compound.compoundEN])
-                    }
+                    character.applyVelocity(MOVING_FRAMES, [-vx, -vy / 2])
+                    this.applyVelocity(MOVING_FRAMES, [vx * this.electronegativity, -vy * this.electronegativity])
                 }
                 else if (pushApart) {
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy < 0) vy = 0
 
-                    if (character.compound == undefined) character.applyVelocity(MOVING_FRAMES, [vx, vy / 2])
-                    else {
-                        character.compound.applyLinkedVelocity(MOVING_FRAMES, [vx, vy / 2])
-                    }
+                    character.applyVelocity(MOVING_FRAMES, [vx, vy / 2])
 
                     if (Math.abs(this.middlePos.getX - character.middlePos.getX) < MULTIPLIER / 2 && (!character.moveLeft || !character.moveRight)) this.applyVelocity(MOVING_FRAMES, [-vx * 10, 0])
 
-                    if ((character.compound == undefined && this.compound == undefined)) this.applyVelocity(MOVING_FRAMES, [-vx, vy])
-                    else if (this.compound != undefined) {
-                        if (Math.abs(this.compound.getClosestElement(character).middlePos.getX - this.middlePos.getX) < MULTIPLIER / 2 && (!this.compound.canMoveLeft() || !this.compound.canMoveRight())) {vx = 0; vy = 0}
-                        if (!this.compound.canMoveLeft() && vx > 0) vx = 0
-                        if (!this.compound.canMoveRight() && vx < 0) vx = 0
-                        this.compound.applyLinkedVelocity(MOVING_FRAMES, [-vx, vy])
-                    }
+                    this.applyVelocity(MOVING_FRAMES, [-vx, vy])
                 }
             }
         });
@@ -163,6 +139,158 @@ export default class Element extends Character {
             this.init = false
         }
 
+        this.onGround = this.isGrounded()
+        this.applyGravity()
+        this.collisionPhysics()
+        this.elementMovement()
+    }
+}
+
+export class Compound extends Element {
+    /**
+     * 
+     * @param {Element} element1
+     * @param {Element} element2 
+     */
+    constructor(element1, element2) {
+        super(element1.level, element1.ionCharge + element2.ionCharge, Math.abs(element1.electronegativity - element2.electronegativity), undefined, 0, 0, undefined)
+        if (element1.xpos < element2.xpos) {
+            this.leftElem = element1
+            this.rightElem = element2
+        }
+        else {
+            this.leftElem = element2
+            this.rightElem = element1
+        }
+
+        this.xpos = this.leftElem.xpos
+        this.ypos = this.leftElem.ypos
+        this.divStyle = element1.divStyle
+        this.elemWidth = parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,""))
+        this.elemHeight = parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,""))
+        this.compWidth = this.elemWidth * 2
+        this.elementLayout = [this.leftElem, this.rightElem]
+    }
+
+    draw() {
+        let element1 = this.elementLayout[0]
+        let element2 = this.elementLayout[1]
+        
+        
+        // this.imageElement.src = this.sprite
+        // this.imageElement.id = this.id
+        // document.body.appendChild(this.divElem)
+        // this.divElem.appendChild(this.imageElement)
+        
+        // this.divElem.classList.add(this.stylesClass)
+        // this.divElem.style.left = this.xpos + "px"
+        // this.divElem.style.top = this.ypos + "px"
+        
+        // this.imageElement.style.width = "inherit"
+        // this.imageElement.style.height = "inherit"
+        // this.imageElement.style.left = "inherit"
+        // this.imageElement.style.top = "inherit"
+        
+        // this.divStyle = window.getComputedStyle(this.divElem)
+        // this.imageStyle = window.getComputedStyle(this.imageElement)
+        
+        this.divElem.appendChild(element1.divElem)
+        this.divElem.appendChild(element2.divElem)
+        this.divElem.style.position = "absolute"
+        element1.divElem.style.position = "relative"
+        element2.divElem.style.position = "relative"
+        
+        this.divElem.style.left = this.xpos + "px"
+        this.divElem.style.top = this.ypos + "px"
+        this.divElem.style.width = (this.elemWidth * 2) + "px"
+        this.divElem.style.height = this.elemHeight + "px"
+
+        this.divElem.style.border = "3px solid red"
+        
+        element1.divElem.style.left = 0 + "px"
+        element1.divElem.style.top = 0 + "px"
+        element2.divElem.style.left = this.width + "px"
+        element2.divElem.style.top = 0 + "px"
+        this.declareCorners(this.compWidth, this.elemHeight)
+        element1.level.removeCharacter(element1)
+        element2.level.removeCharacter(element2)
+        this.init = false
+    }
+
+    setPos(x, y) {
+        this.xpos = x
+        this.ypos = y
+        this.divElem.style.left = x + "px"
+        this.divElem.style.top = y + "px"
+        this.declareCorners(this.compWidth, this.elemHeight)
+
+        for (let i = 0; i < this.elementLayout.length; i++) {
+            this.elementLayout[i].divElem.style.left = i * this.elemWidth
+            this.elementLayout[i].divElem.style.top = 0
+        }
+    }
+    
+    /**
+     * @description adds an element to this compund object
+     * @param {Element} element
+    */
+   addElement(element) {
+       element.compound = this
+       this.elementList.push(element)
+       this.updateCharge(element)
+    }
+    
+    /**
+     * @description returns the element that the closest to the given character
+     * @param {Character} character
+    */
+   getClosestPole(character) {
+       let x = character.middlePos.getX
+       let y = character.middlePos.getY
+       
+       let low = undefined
+       let returnVal = undefined;
+        this.elementList.forEach((element) => {
+            let totalDistance = Math.abs(element.middlePos.getX - x) + Math.abs(element.middlePos.getY - y)
+            if (returnVal == undefined || totalDistance < low) {
+                low = totalDistance
+                returnVal = element
+            }
+        })
+        
+        return returnVal
+    }
+    
+    containsElement(element) {
+        return this.elementList.includes(element)
+    }
+    
+    updateCharge(element) {
+        let additionalCharge = element.ionCharge
+        this.compoundCharge += additionalCharge
+        
+        if (this.compoundCharge < 0) {
+            this.positive = false
+            this.negative = true
+        }
+        else if (this.compoundCharge > 0) {
+            this.positive = true
+            this.negative = false
+        }
+        else {
+            this.positive = false
+            this.negative = false
+        }
+        
+        this.compoundEN = Math.abs(this.compoundEN - element.electronegativity)
+    }
+    
+    tickFunctions() {
+        if (this.init) {
+            this.draw()
+            this.init = false
+        }
+        
         this.onGround = this.isGrounded()
         this.applyGravity()
         this.collisionPhysics()
