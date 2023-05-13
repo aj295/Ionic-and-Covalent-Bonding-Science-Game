@@ -175,45 +175,28 @@ export class Compound extends Element {
     draw() {
         let element1 = this.elementLayout[0]
         let element2 = this.elementLayout[1]
-        
-        
-        // this.imageElement.src = this.sprite
-        // this.imageElement.id = this.id
-        // document.body.appendChild(this.divElem)
-        // this.divElem.appendChild(this.imageElement)
-        
-        // this.divElem.classList.add(this.stylesClass)
-        // this.divElem.style.left = this.xpos + "px"
-        // this.divElem.style.top = this.ypos + "px"
-        
-        // this.imageElement.style.width = "inherit"
-        // this.imageElement.style.height = "inherit"
-        // this.imageElement.style.left = "inherit"
-        // this.imageElement.style.top = "inherit"
-        
-        // this.divStyle = window.getComputedStyle(this.divElem)
-        // this.imageStyle = window.getComputedStyle(this.imageElement)
-        
-        this.divElem.appendChild(element1.divElem)
-        this.divElem.appendChild(element2.divElem)
-        this.divElem.style.position = "absolute"
-        element1.divElem.style.position = "relative"
-        element2.divElem.style.position = "relative"
-        
+        element1.level.removeCharacter(element1)
+        element2.level.removeCharacter(element2)
+
         this.divElem.style.left = this.xpos + "px"
         this.divElem.style.top = this.ypos + "px"
         this.divElem.style.width = (this.elemWidth * 2) + "px"
         this.divElem.style.height = this.elemHeight + "px"
+        
+        this.divElem.appendChild(element1.divElem)
+        this.divElem.appendChild(element2.divElem)
+        document.body.appendChild(this.divElem)
+        this.divElem.style.position = "absolute"
+        element1.divElem.style.position = "relative"
+        element2.divElem.style.position = "relative"
 
         this.divElem.style.border = "3px solid red"
         
-        element1.divElem.style.left = 0 + "px"
-        element1.divElem.style.top = 0 + "px"
-        element2.divElem.style.left = this.width + "px"
-        element2.divElem.style.top = 0 + "px"
+        // element1.divElem.style.left = 0 + "px"
+        // element1.divElem.style.top = 0 + "px"
+        // element2.divElem.style.left = this.elemWidth + "px"
+        // element2.divElem.style.top = 0 + "px"
         this.declareCorners(this.compWidth, this.elemHeight)
-        element1.level.removeCharacter(element1)
-        element2.level.removeCharacter(element2)
         this.init = false
     }
 
@@ -222,12 +205,12 @@ export class Compound extends Element {
         this.ypos = y
         this.divElem.style.left = x + "px"
         this.divElem.style.top = y + "px"
-        this.declareCorners(this.compWidth, this.elemHeight)
-
+        
         for (let i = 0; i < this.elementLayout.length; i++) {
-            this.elementLayout[i].divElem.style.left = i * this.elemWidth
-            this.elementLayout[i].divElem.style.top = 0
+            this.elementLayout[i].divElem.style.left = i * this.elemWidth + "px"
+            this.elementLayout[i].divElem.style.top = -(this.elemHeight * i) + "px"
         }
+        this.declareCorners(this.compWidth, this.elemHeight)
     }
     
     /**
@@ -250,7 +233,7 @@ export class Compound extends Element {
        
        let low = undefined
        let returnVal = undefined;
-        this.elementList.forEach((element) => {
+        this.elementLayout.forEach((element) => {
             let totalDistance = Math.abs(element.middlePos.getX - x) + Math.abs(element.middlePos.getY - y)
             if (returnVal == undefined || totalDistance < low) {
                 low = totalDistance
@@ -262,7 +245,7 @@ export class Compound extends Element {
     }
     
     containsElement(element) {
-        return this.elementList.includes(element)
+        return this.elementLayout.includes(element)
     }
     
     updateCharge(element) {
@@ -282,7 +265,7 @@ export class Compound extends Element {
             this.negative = false
         }
         
-        this.compoundEN = Math.abs(this.compoundEN - element.electronegativity)
+        this.electronegativity = Math.abs(this.compoundEN - element.electronegativity)
     }
     
     tickFunctions() {

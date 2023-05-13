@@ -52,7 +52,6 @@ let tick = () => {
 window.addEventListener("keypress", (event) => {
     if (event.code == "KeyF") {
         console.log("debug key")
-        console.log(canvas.style.backgroundImage)
     }
 })
 
