@@ -1,5 +1,4 @@
-let window_height = window.screen.height
-let window_width = window.screen.width
+//import { window_height, window_width } from "../script.js"
 
 export default class Line {
     /**
@@ -11,12 +10,11 @@ export default class Line {
      * @param {*} context context of the canvas
      * @param {Level} level the level the line is contained in, leave undifined if not part of level
      */
-    constructor(x1, y1, x2, y2, context, level = undefined) { //coordinate pairs are an array of two numbers [x, y]
+    constructor(x1, y1, x2, y2, level = undefined) { //coordinate pairs are an array of two numbers [x, y]
         this.x1 = x1
         this.y1 = y1
         this.x2 = x2
         this.y2 = y2
-        this.ctx = context
         this.thickness = 5
         this.vertical = x1 == x2
         this.horizontal = y1 == y2
@@ -24,21 +22,15 @@ export default class Line {
         if (level != undefined) {
             level.addCollisionLine(this)
         }
-    }
-
-    draw() {
-        this.ctx.strokeStyle = "red";
-        this.ctx.lineWidth = this.thickness;
-    
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.x1, this.y1);
-        this.ctx.lineTo(this.x2, this.y2);
-        this.ctx.stroke();
+        // this.divElem = document.createElement("div")
+        // this.divElem.style.width = Math.abs(x1 - x2) + "px"
+        // this.divElem.style.height = Math.abs(y1 - y2) + "px"
+        // this.divElem.style.border = this.thickness + "px solid red"
+        // this.divElem.style.top = y1
+        // this.divElem.style.left = x1
     }
 
     update(x1, y1, x2, y2) {
-        this.ctx.clearLine(0, 0, window_width, window_height)
-        this.draw(this.ctx)
 
         this.x1 += x1
         this.y1 += y1
@@ -46,9 +38,5 @@ export default class Line {
         this.y2 += y2
         
         this.draw()
-    }
-
-    remove() {
-        this.ctx.clearLine(0, 0, window_width, window_height)
     }
 }

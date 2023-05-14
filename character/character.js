@@ -1,28 +1,24 @@
-let window_height = window.screen.height
-let window_width = window.screen.width
+import { window_height, window_width } from "../script.js"
+
 let availableId = 1
 
 export default class Character {
     /**
      * 
-     * @param {*} context context of the canvas
      * @param {spriteMap} spriteMap the spriteMap object that declares the different poses of the character
      * @param {Level} level the current level of the character
      * @param {number} xpos origin x position of the character
      * @param {number} ypos origin y position of the character
-     * @param {number} width width of character, if not specified automatic width is used
-     * @param {number} height height of character, if not specified automatic height is used
+     * @param {String} stylesClass name of the css styles class that goes with this character
      * @param {number} gravity effects how fast or slow the character falls
      */
-    constructor(context, level, spriteMap, xpos, ypos, gravity = 0.03, width = -1, height = -1) {
-        this.context = context
+    constructor(level, spriteMap, xpos, ypos, stylesClass, gravity = 0.03) {
         this.xpos = xpos
         this.ypos = ypos
         this.spriteMap = spriteMap
-        this.width = width
-        this.height = height
+        this.stylesClass = stylesClass
         this.level = level
-        this.sprite = spriteMap.idle
+        if (this.spriteMap != undefined) this.sprite = spriteMap.idle
 
         this.gravity = gravity
         this.airTime = 0
@@ -46,7 +42,15 @@ export default class Character {
         this.isPlayer = false
         this.characterController = undefined
 
-        level.characters.push(this)
+        level.addCharacter(this)
+
+        this.divElem = document.createElement("div")
+        this.imageElement = document.createElement("img")
+
+        this.init = true
+
+        this.width = 0
+        this.height = 0
     }
 
     /**
@@ -54,7 +58,7 @@ export default class Character {
      * @param {number} width width of the character 
      * @param {number} height height of the character
      */
-    #declareCorners(width, height) {
+    declareCorners(width, height) {
         this.upperLeft = {
             getX: this.xpos,
             getY: this.ypos,
@@ -99,23 +103,27 @@ export default class Character {
      * @description draws character onto screen
      */
     draw() {
-        let image = document.createElement("img")
-        this.imageElement = image
-        image.src = this.sprite
-        image.id = this.id
-        if (this.width > -1 && this.height > -1) this.context.drawImage(image, this.xpos, this.ypos, this.width, this.height)
-        else this.context.drawImage(image, this.xpos, this.ypos, image.width * this.spriteMap.scale, image.height * this.spriteMap.scale)
-        this.#declareCorners(image.width * this.spriteMap.scale, image.height * this.spriteMap.scale)
+        this.imageElement.src = this.sprite
+        this.imageElement.id = this.id
+        document.body.appendChild(this.divElem)
+        this.divElem.appendChild(this.imageElement)
 
-        // let charDiv = document.createElement("div")
-        // let image = new Image()
-        // image.src = this.sprite
-        // charDiv.style.width = image.width * this.spriteMap.scale
-        // charDiv.style.height = image.height * this.spriteMap.scale
-        // charDiv.style.backgroundImage = "url(" + this.sprite + ")"
-        // charDiv.style.left = this.xpos + "px"
-        // charDiv.style.top = this.ypos + "px"
-        // this.#declareCorners(image.width * this.spriteMap.scale, image.height * this.spriteMap.scale)
+        this.divElem.classList.add(this.stylesClass)
+        this.divElem.style.left = this.xpos + "px"
+        this.divElem.style.top = this.ypos + "px"
+
+        this.divElem.style.position = "absolute"
+        this.imageElement.style.position = "relative"
+        this.imageElement.style.left = 0
+        this.imageElement.style.top = 0
+
+        this.divElem.style.border = "3px solid red"
+
+        console.log(this.divElem.children)
+
+        this.divStyle = window.getComputedStyle(this.divElem)
+        this.imageStyle = window.getComputedStyle(this.imageElement)
+        this.declareCorners(parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
     }
 
     /**
@@ -124,49 +132,11 @@ export default class Character {
      * @param {number} y new y coordinate
      */
     setPos(x, y) {
-        //this.context.clearRect(0, 0, window_width, window_height)
-        // this.context.clearRect(this.xpos, this.ypos, this.bottomRight.getX, this.bottomRight.getY)
-
         this.xpos = x
         this.ypos = y
-
-        this.upperLeft = {
-            getX: this.xpos,
-            getY: this.ypos,
-            coordinateList: [this.xpos, this.ypos]
-        }
-
-        this.upperRight = {
-            getX: this.xpos + this.width,
-            getY: this.ypos,
-            coordinateList: [this.xpos + this.width, this.ypos]
-        }
-
-        this.bottomLeft = {
-            getX: this.xpos,
-            getY: this.ypos + this.height,
-            coordinateList: [this.xpos, this.ypos + this.height]
-        }
-
-        this.bottomRight = {
-            getX: this.xpos + this.width,
-            getY: this.ypos + this.height,
-            coordinateList: [this.xpos + this.width, this.ypos + this.height]
-        }
-
-        this.middleBottom = {
-            getX: this.xpos + (this.width / 2),
-            getY: this.ypos + this.height,
-            coordinateList: [this.xpos + (this.width / 2), this.ypos + this.height]
-        }
-
-        this.middlePos = {
-            getX: this.xpos + (this.width / 2),
-            getY: this.ypos - (this.height / 2),
-            coordinateList: [this.xpos + (this.width / 2), this.ypos - (this.height / 2)]
-        }
-
-        this.draw()
+        this.divElem.style.left = x + "px"
+        this.divElem.style.top = y + "px"
+        this.declareCorners(parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))
     }
 
     /**
@@ -176,20 +146,11 @@ export default class Character {
      */
     update(offSetX, offSetY) {
 
-        if (!this.moveLeft && offSetX < 0) offSetX = 0 
-        if (!this.moveRight && offSetX > 0) offSetX = 0
+        if ((!this.moveLeft || this.xpos <= 0) && offSetX < 0) offSetX = 0 
+        if ((!this.moveRight || this.upperRight.getX >= window_width) && offSetX > 0) offSetX = 0
         if (!this.moveUp && offSetY > 0) offSetY = 0
         
-        this.context.clearRect(this.xpos, this.ypos, this.width, this.height)
-        
-        let updateCornerList = [this.bottomLeft, this.bottomRight, this.upperLeft, this.upperRight, this.middleBottom]
-
-        this.xpos += offSetX
-        this.ypos -= offSetY
-
-        updateCornerList.forEach((item) => {item.getX += offSetX; item.getY -= offSetY}) 
-
-        this.draw()
+        this.setPos(this.xpos + offSetX, this.ypos - offSetY)
     }
 
     /**
@@ -275,10 +236,6 @@ export default class Character {
         else this.airTime = 0
     }
 
-    test() {
-        console.log("this is a test")
-    }
-
     /**
      * @description offset the character's x and y values with the distance parameter over a certain amount of time
      * @param {number} time 
@@ -301,23 +258,25 @@ export default class Character {
                 let XVelocity = distance[0] / time
                 let YVelocity = distance[1] / time
 
-                if (YVelocity > 0) {
+                if (this.spriteMap != undefined) {
+                    if (YVelocity > 0) {
+                        if (XVelocity > 0) {
+                            this.imageElement.src = this.spriteMap.upRightFacing
+                        }
+                        else if (XVelocity < 0) {
+                            this.imageElement.src = this.spriteMap.upLeftFacing
+                        }
+                        else {
+                            this.imageElement.src = this.spriteMap.upFacing
+                        }
+                    }
+
                     if (XVelocity > 0) {
-                        this.sprite = this.spriteMap.upRightFacing
+                        this.imageElement.src = this.spriteMap.rightFacing
                     }
                     else if (XVelocity < 0) {
-                        this.sprite = this.spriteMap.upLeftFacing
+                        this.imageElement.src = this.spriteMap.leftFacing
                     }
-                    else {
-                        this.sprite = this.spriteMap.upFacing
-                    }
-                }
-
-                if (XVelocity > 0) {
-                    this.sprite = this.spriteMap.rightFacing
-                }
-                else if (XVelocity < 0) {
-                    this.sprite = this.spriteMap.leftFacing
                 }
 
                 if (this.onGround && YVelocity < 0) YVelocity = 0 //prevents going through floor
@@ -363,17 +322,22 @@ export default class Character {
         else return false
     }
 
-    remove() {
-        this.level.characters.splice(this.level.characters.indexOf(this), 1)
-        this.context.clearRect(this.xpos, this.ypos, this.width, this.height)
-    }
+    // remove() {
+    //     this.level.characters.splice(this.level.characters.indexOf(this), 1)
+    //     this.divElem.remove()
+    // }
 
     /**
      * @description method to be ran every frame
      */
     tickFunctions() {
+        if (this.init) {
+            this.draw()
+            this.init = false
+        }
+
         this.onGround = this.isGrounded()
-        this.draw()
+
         this.applyGravity()
         this.collisionPhysics()
     }

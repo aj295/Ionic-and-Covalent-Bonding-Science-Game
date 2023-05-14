@@ -1,9 +1,7 @@
 import Character from "./character/character.js"
-import Compound from "./compound.js"
 import Photon from "./photon.js"
 
-let window_height = window.screen.height
-let window_width = window.screen.width
+import { window_height, window_width } from "../script.js"
 
 /**
      * 
@@ -14,13 +12,11 @@ let window_width = window.screen.width
      * @param {Level} level the current level of the character
      * @param {number} xpos origin x position of the character
      * @param {number} ypos origin y position of the character
-     * @param {number} width width of character, if not specified automatic width is used
-     * @param {number} height height of character, if not specified automatic height is used
      * @param {number} gravity effects how fast or slow the character falls
      */
 export default class Element extends Character {
-    constructor(context, level, ionCharge, electronegativity, spriteMap, xpos, ypos, gravity = 0.03, width = -1, height = -1) {
-        super(context, level, spriteMap, xpos, ypos, gravity, width, height)
+    constructor(level, ionCharge, electronegativity, spriteMap, xpos, ypos, stylesClass, gravity = 0.03) {
+        super(level, spriteMap, xpos, ypos, stylesClass, gravity)
         this.ionCharge = ionCharge
         if (ionCharge < 0) {
             this.positive = false
@@ -36,8 +32,6 @@ export default class Element extends Character {
         }
 
         this.electronegativity = electronegativity
-
-        this.compound = undefined //points to the compound this element is a part of, undefined if it is not part of a compound
     }
     
     elementMovement() {
@@ -45,8 +39,7 @@ export default class Element extends Character {
             if (character instanceof Photon) return 0
             if (this.isColliding(character)) {
                     return 0
-                } // returns 0 if the characters are colliding
-            if (character.compound != undefined && character.compound.containsElement(this)) return 0
+            } // returns 0 if the characters are colliding
 
             let x1 = this.middlePos.getX
             let y1 = this.middlePos.getY
@@ -79,14 +72,14 @@ export default class Element extends Character {
             let yDistance = Math.abs(this.middlePos.getY - character.middlePos.getY)
 
             if (yDistance <=5 && xDistance <= character.width + stopDistance && xDistance != 0 && !character.isPlayer) {
-                if (this.compound == undefined) { //two non-player elements colliding physics
-                    let newCompund = new Compound(this, character)
-                    this.compound = newCompund
-                    character.compound = newCompund
-                    console.log("hi")
+                if ((this instanceof Element && !(this instanceof Compound)) && (character instanceof Element && !(character instanceof Compound))) { //two non-player elements colliding physics
+                    let newComp = new Compound(this, character)
+                    newComp.draw()
+                    this.level.addCharacter(newComp)
                 }
-                else if (this.compound != undefined && character.compound == undefined) {
-                    this.compound.addElement(character)
+                else if (character instanceof Compound && (this instanceof Element && !(this instanceof Compound))) {
+                    console.log("e")
+                    character.addElement(this)
                     return 0
                 }
             }
@@ -106,50 +99,24 @@ export default class Element extends Character {
             if ((xDistance <= range && (xDistance > 0 || (this.compound != undefined && character.compound != undefined))) && (yDistance <= range)) { //checks if the electrons are within a certain range of pixels
                 let pullTogether = false
                 let pushApart = false
-
-                if ((character.isPlayer || character instanceof Element) && this.compound == undefined) {
-                    let oppositeCharge = (character.isPlayer && this.positive) || character.positive == this.negative
-                    pullTogether = oppositeCharge
-                    pushApart = !oppositeCharge
-                }
-                else if (!this.compound.containsElement(character)) {
-                    let oppositeCharge = (character.isPlayer && this.compound.getClosestElement(character).positive) || character.positive == this.compound.getClosestElement(character).negative
-                    pullTogether = oppositeCharge
-                    pushApart = !oppositeCharge
-                }
+                let oppositeCharge = (character.isPlayer && this.positive) || character.positive == this.negative
+                pullTogether = oppositeCharge
+                pushApart = !oppositeCharge
 
                 if (pullTogether) {
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy > 0) vy = 0
 
-                    if (character.compound == undefined) character.applyVelocity(MOVING_FRAMES, [-vx, -vy / 2])
-                    else {
-                        character.compound.applyLinkedVelocity(MOVING_FRAMES, [-vx, -vy / 2])
-                    }
-
-                    if ((character.compound == undefined && this.compound == undefined)) this.applyVelocity(MOVING_FRAMES, [vx * this.electronegativity, -vy * this.electronegativity])
-                    else if (this.compound != undefined) {
-                        if (!this.compound.canMoveLeft() && vx < 0) vx = 0
-                        if (!this.compound.canMoveRight() && vx > 0) vx = 0
-                        this.compound.applyLinkedVelocity(MOVING_FRAMES, [vx * this.compound.compoundEN, -vy * this.compound.compoundEN])
-                    }
+                    character.applyVelocity(MOVING_FRAMES, [-vx, -vy / 2])
+                    this.applyVelocity(MOVING_FRAMES, [vx * this.electronegativity, -vy * this.electronegativity])
                 }
                 else if (pushApart) {
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy < 0) vy = 0
 
-                    if (character.compound == undefined) character.applyVelocity(MOVING_FRAMES, [vx, vy / 2])
-                    else {
-                        character.compound.applyLinkedVelocity(MOVING_FRAMES, [vx, vy / 2])
-                    }
+                    character.applyVelocity(MOVING_FRAMES, [vx, vy / 2])
 
                     if (Math.abs(this.middlePos.getX - character.middlePos.getX) < MULTIPLIER / 2 && (!character.moveLeft || !character.moveRight)) this.applyVelocity(MOVING_FRAMES, [-vx * 10, 0])
 
-                    if ((character.compound == undefined && this.compound == undefined)) this.applyVelocity(MOVING_FRAMES, [-vx, vy])
-                    else if (this.compound != undefined) {
-                        if (Math.abs(this.compound.getClosestElement(character).middlePos.getX - this.middlePos.getX) < MULTIPLIER / 2 && (!this.compound.canMoveLeft() || !this.compound.canMoveRight())) {vx = 0; vy = 0}
-                        if (!this.compound.canMoveLeft() && vx > 0) vx = 0
-                        if (!this.compound.canMoveRight() && vx < 0) vx = 0
-                        this.compound.applyLinkedVelocity(MOVING_FRAMES, [-vx, vy])
-                    }
+                    this.applyVelocity(MOVING_FRAMES, [-vx, vy])
                 }
             }
         });
@@ -160,8 +127,143 @@ export default class Element extends Character {
      * @description method to be ran every frame
      */
     tickFunctions() {
+        if (this.init) {
+            this.draw()
+            this.init = false
+        }
+
         this.onGround = this.isGrounded()
-        this.draw()
+        this.applyGravity()
+        this.collisionPhysics()
+        this.elementMovement()
+    }
+}
+
+export class Compound extends Element {
+    /**
+     * 
+     * @param {Element} element1
+     * @param {Element} element2 
+     */
+    constructor(element1, element2) {
+        super(element1.level, element1.ionCharge + element2.ionCharge, Math.abs(element1.electronegativity - element2.electronegativity), undefined, 0, 0, undefined)
+        if (element1.xpos < element2.xpos) {
+            this.leftElem = element1
+            this.rightElem = element2
+        }
+        else {
+            this.leftElem = element2
+            this.rightElem = element1
+        }
+
+        this.xpos = this.leftElem.xpos
+        this.ypos = this.leftElem.ypos
+        this.divStyle = element1.divStyle
+        this.elemWidth = parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,""))
+        this.elemHeight = parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,""))
+        this.compWidth = this.elemWidth * 2
+        this.elementLayout = [this.leftElem, this.rightElem]
+    }
+
+    draw() {
+        let element1 = this.elementLayout[0]
+        let element2 = this.elementLayout[1]
+        element1.level.removeCharacter(element1)
+        element2.level.removeCharacter(element2)
+
+        this.divElem.style.left = this.xpos + "px"
+        this.divElem.style.top = this.ypos + "px"
+        this.divElem.style.width = (this.elemWidth * 2) + "px"
+        this.divElem.style.height = this.elemHeight + "px"
+        
+        this.divElem.appendChild(element1.divElem)
+        this.divElem.appendChild(element2.divElem)
+        document.body.appendChild(this.divElem)
+        this.divElem.style.position = "relative"
+        element1.divElem.style.position = "absolute"
+        element2.divElem.style.position = "absolute"
+
+        this.divElem.style.border = "3px solid red"
+        
+        // element1.divElem.style.left = 0 + "px"
+        // element1.divElem.style.top = 0 + "px"
+        // element2.divElem.style.left = this.elemWidth + "px"
+        // element2.divElem.style.top = 0 + "px"
+        this.declareCorners(this.compWidth, this.elemHeight)
+        this.init = false
+    }
+
+    setPos(x, y) {
+        this.xpos = x
+        this.ypos = y
+        this.divElem.style.left = x + "px"
+        this.divElem.style.top = y + "px"
+        
+        for (let i = 0; i < this.elementLayout.length; i++) {
+            this.elementLayout[i].divElem.style.left = i * this.elemWidth + "px"
+            this.elementLayout[i].divElem.style.top = 0 + "px"
+        }
+        this.declareCorners(this.compWidth, this.elemHeight)
+    }
+    
+    /**
+     * @description adds an element to this compund object
+     * @param {Element} element
+    */
+    addElement(otherElement) {
+        otherElement.level.removeCharacter(otherElement)
+        this.compWidth += this.elemWidth
+        this.divElem.style.width = this.compWidth + "px"
+        this.declareCorners(this.compWidth, this.elemHeight)
+
+        this.divElem.appendChild(otherElement.divElem)
+
+        otherElement.divElem.style.position = "absolute"
+
+        this.updateCharge(otherElement)
+        
+        let leftDist = Math.abs(this.elementLayout[0].middlePos.getX - otherElement.middlePos.getX) 
+        let rightDist = Math.abs(this.elementLayout[this.elementLayout.length - 1].middlePos.getX - otherElement.middlePos.getX) 
+
+        if (rightDist < leftDist) this.elementLayout.push(otherElement)
+        else this.elementLayout.unshift(otherElement)
+    }
+
+    insertInElementLayout(index, element) {
+        this.elementLayout.splice(index, 0, element)
+    }
+    
+    containsElement(element) {
+        return this.elementLayout.includes(element)
+    }
+    
+    updateCharge(element) {
+        let additionalCharge = element.ionCharge
+        this.ionCharge += additionalCharge
+        
+        if (this.ionCharge < 0) {
+            this.positive = false
+            this.negative = true
+        }
+        else if (this.ionCharge > 0) {
+            this.positive = true
+            this.negative = false
+        }
+        else {
+            this.positive = false
+            this.negative = false
+        }
+        
+        this.electronegativity = Math.abs(this.compoundEN - element.electronegativity)
+    }
+    
+    tickFunctions() {
+        if (this.init) {
+            this.draw()
+            this.init = false
+        }
+        
+        this.onGround = this.isGrounded()
         this.applyGravity()
         this.collisionPhysics()
         this.elementMovement()

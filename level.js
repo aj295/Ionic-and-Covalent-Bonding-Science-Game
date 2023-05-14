@@ -1,3 +1,4 @@
+import { Compound } from "./element.js"
 import Photon from "./photon.js"
 
 export default class Level {
@@ -21,6 +22,14 @@ export default class Level {
 
     addCollisionLine(line) {
         this.collisionLines.push(line)
+    }
+
+    addCharacter(character) {
+        if (!(character instanceof Compound) || !character.init) this.characters.push(character)
+    }
+
+    removeCharacter(character) {
+        this.characters.splice(this.characters.indexOf(character), 1)
     }
 
     /**
