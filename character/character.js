@@ -1,4 +1,4 @@
-import { window_height, window_width } from "../../Science game/script.js"
+import { window_height, window_width } from "../script.js"
 
 let availableId = 1
 
