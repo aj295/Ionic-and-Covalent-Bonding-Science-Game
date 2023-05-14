@@ -1,6 +1,6 @@
 import Character from "./character/character.js";
 
-import { window_height, window_width } from "../script.js"
+import { window_height, window_width } from "./script.js"
 
 const RANDOM_MULTIPLIER = 0.5
 const RANDOM_ADDITIONAL = 0.2
