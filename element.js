@@ -72,13 +72,14 @@ export default class Element extends Character {
             let yDistance = Math.abs(this.middlePos.getY - character.middlePos.getY)
 
             if (yDistance <=5 && xDistance <= character.width + stopDistance && xDistance != 0 && !character.isPlayer) {
-                if (this instanceof Element && character instanceof Element) { //two non-player elements colliding physics
+                if ((this instanceof Element && !(this instanceof Compound)) && (character instanceof Element && !(character instanceof Compound))) { //two non-player elements colliding physics
                     let newComp = new Compound(this, character)
                     newComp.draw()
                     this.level.addCharacter(newComp)
                 }
-                else if (this instanceof Compound && character instanceof Element) {
-                    this.addElement(character)
+                else if (character instanceof Compound && (this instanceof Element && !(this instanceof Compound))) {
+                    console.log("e")
+                    character.addElement(this)
                     return 0
                 }
             }
@@ -98,17 +99,9 @@ export default class Element extends Character {
             if ((xDistance <= range && (xDistance > 0 || (this.compound != undefined && character.compound != undefined))) && (yDistance <= range)) { //checks if the electrons are within a certain range of pixels
                 let pullTogether = false
                 let pushApart = false
-
-                if ((character.isPlayer || character instanceof Element) && this instanceof Element) {
-                    let oppositeCharge = (character.isPlayer && this.positive) || character.positive == this.negative
-                    pullTogether = oppositeCharge
-                    pushApart = !oppositeCharge
-                }
-                else if (this instanceof Compound && character instanceof Element) {
-                    let oppositeCharge = (character.isPlayer && this.getClosestPole(character) == "positive") || character.positive == this.getClosestPole(character) == "negative"
-                    pullTogether = oppositeCharge
-                    pushApart = !oppositeCharge
-                }
+                let oppositeCharge = (character.isPlayer && this.positive) || character.positive == this.negative
+                pullTogether = oppositeCharge
+                pushApart = !oppositeCharge
 
                 if (pullTogether) {
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy > 0) vy = 0
@@ -186,9 +179,9 @@ export class Compound extends Element {
         this.divElem.appendChild(element1.divElem)
         this.divElem.appendChild(element2.divElem)
         document.body.appendChild(this.divElem)
-        this.divElem.style.position = "absolute"
-        element1.divElem.style.position = "relative"
-        element2.divElem.style.position = "relative"
+        this.divElem.style.position = "relative"
+        element1.divElem.style.position = "absolute"
+        element2.divElem.style.position = "absolute"
 
         this.divElem.style.border = "3px solid red"
         
@@ -208,7 +201,7 @@ export class Compound extends Element {
         
         for (let i = 0; i < this.elementLayout.length; i++) {
             this.elementLayout[i].divElem.style.left = i * this.elemWidth + "px"
-            this.elementLayout[i].divElem.style.top = -(this.elemHeight * i) + "px"
+            this.elementLayout[i].divElem.style.top = 0 + "px"
         }
         this.declareCorners(this.compWidth, this.elemHeight)
     }
@@ -217,31 +210,27 @@ export class Compound extends Element {
      * @description adds an element to this compund object
      * @param {Element} element
     */
-   addElement(element) {
-       element.compound = this
-       this.elementList.push(element)
-       this.updateCharge(element)
-    }
-    
-    /**
-     * @description returns the element that the closest to the given character
-     * @param {Character} character
-    */
-   getClosestPole(character) {
-       let x = character.middlePos.getX
-       let y = character.middlePos.getY
-       
-       let low = undefined
-       let returnVal = undefined;
-        this.elementLayout.forEach((element) => {
-            let totalDistance = Math.abs(element.middlePos.getX - x) + Math.abs(element.middlePos.getY - y)
-            if (returnVal == undefined || totalDistance < low) {
-                low = totalDistance
-                returnVal = element
-            }
-        })
+    addElement(otherElement) {
+        otherElement.level.removeCharacter(otherElement)
+        this.compWidth += this.elemWidth
+        this.divElem.style.width = this.compWidth + "px"
+        this.declareCorners(this.compWidth, this.elemHeight)
+
+        this.divElem.appendChild(otherElement.divElem)
+
+        otherElement.divElem.style.position = "absolute"
+
+        this.updateCharge(otherElement)
         
-        return returnVal
+        let leftDist = Math.abs(this.elementLayout[0].middlePos.getX - otherElement.middlePos.getX) 
+        let rightDist = Math.abs(this.elementLayout[this.elementLayout.length - 1].middlePos.getX - otherElement.middlePos.getX) 
+
+        if (rightDist < leftDist) this.elementLayout.push(otherElement)
+        else this.elementLayout.unshift(otherElement)
+    }
+
+    insertInElementLayout(index, element) {
+        this.elementLayout.splice(index, 0, element)
     }
     
     containsElement(element) {
@@ -250,13 +239,13 @@ export class Compound extends Element {
     
     updateCharge(element) {
         let additionalCharge = element.ionCharge
-        this.compoundCharge += additionalCharge
+        this.ionCharge += additionalCharge
         
-        if (this.compoundCharge < 0) {
+        if (this.ionCharge < 0) {
             this.positive = false
             this.negative = true
         }
-        else if (this.compoundCharge > 0) {
+        else if (this.ionCharge > 0) {
             this.positive = true
             this.negative = false
         }
