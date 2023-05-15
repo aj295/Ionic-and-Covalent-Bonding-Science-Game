@@ -37,6 +37,7 @@ export default class Element extends Character {
     elementMovement() {
         this.level.characters.forEach(character => {
             if (character instanceof Photon) return 0
+            if ((!this.isPlayer && this.ionCharge == 0) || (!character.isPlayer && character.ionCharge == 0)) return 0
             if (this.isColliding(character)) {
                     return 0
             } // returns 0 if the characters are colliding
@@ -67,7 +68,7 @@ export default class Element extends Character {
             if (!this.moveUp && vy > 0) vy = 0
 
 
-            let stopDistance = 10
+            let stopDistance = 100
             let xDistance = Math.abs(this.middlePos.getX - character.middlePos.getX)
             let yDistance = Math.abs(this.middlePos.getY - character.middlePos.getY)
 
@@ -84,10 +85,10 @@ export default class Element extends Character {
                 }
             }
 
-            if (xDistance < stopDistance && xDistance != 0 && character.isPlayer && yDistance < stopDistance) {
+            if (xDistance < stopDistance + this.width && xDistance != 0 && character.isPlayer && yDistance < stopDistance) {
                 //console.log("collided  with player")
                 //put end game logic here <--
-                character.setPos(character.level.beginningPos[0], character.level.beginningPos[1])
+                console.log("hi")
             }
 
             let range = 600
@@ -202,6 +203,10 @@ export class Compound extends Element {
         for (let i = 0; i < this.elementLayout.length; i++) {
             this.elementLayout[i].divElem.style.left = i * this.elemWidth + "px"
             this.elementLayout[i].divElem.style.top = 0 + "px"
+
+            this.elementLayout[i].xpos = this.xpos + (i * this.elemWidth)
+            this.elementLayout[i].ypos = this.ypos
+            this.elementLayout[i].declareCorners(this.elemWidth, this.elemHeight)
         }
         this.declareCorners(this.compWidth, this.elemHeight)
     }
@@ -227,6 +232,8 @@ export class Compound extends Element {
 
         if (rightDist < leftDist) this.elementLayout.push(otherElement)
         else this.elementLayout.unshift(otherElement)
+
+        this.setPos(this.xpos, this.ypos)
     }
 
     insertInElementLayout(index, element) {
@@ -238,8 +245,7 @@ export class Compound extends Element {
     }
     
     updateCharge(element) {
-        let additionalCharge = element.ionCharge
-        this.ionCharge += additionalCharge
+        this.ionCharge += element.ionCharge
         
         if (this.ionCharge < 0) {
             this.positive = false
@@ -254,7 +260,7 @@ export class Compound extends Element {
             this.negative = false
         }
         
-        this.electronegativity = Math.abs(this.compoundEN - element.electronegativity)
+        this.electronegativity = Math.abs(this.electronegativity - element.electronegativity)
     }
     
     tickFunctions() {
