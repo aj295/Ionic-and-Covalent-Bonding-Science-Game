@@ -27,13 +27,13 @@ let level1Ini = function(thisLevel) {
     let characterController = new CharacterController(character, 1.2, 300, 4)
     characterController.startControllerInput("Space", "KeyA", "KeyD", "ShiftLeft")
 
-    let element = new Element(thisLevel, -6, 0.9, electron, window_width - 100, window_height - 1000, "elemAndElectron")
+    let element = new Element(thisLevel, -6, 0.9, electron, window_width - 400, window_height - 1000, "elemAndElectron")
     element.draw()
 
     let element2 = new Element(thisLevel, 9, 1.5, positive, 20, window_height - characterHeight - 1000, "elemAndElectron")
     element2.draw()
 
-    let element3 = new Element(thisLevel, 4, 0.4, positive, window_width - 400, window_height - characterHeight - 1000, "elemAndElectron")
+    let element3 = new Element(thisLevel, 4, 0.4, positive, window_width - 100, window_height - characterHeight - 1000, "elemAndElectron")
     element3.draw()
 
     let testFloor = new Line(10, window_height - 25, 500, window_height - 25, thisLevel)

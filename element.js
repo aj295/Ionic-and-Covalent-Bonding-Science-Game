@@ -78,7 +78,7 @@ export default class Element extends Character {
                     newComp.draw()
                     this.level.addCharacter(newComp)
                 }
-                else if (character instanceof Compound && (this instanceof Element && !(this instanceof Compound))) {
+                else if (character instanceof Compound && (this instanceof Element && !(this instanceof Compound)) && character.getClosestElement(this).positive == this.negative) {
                     console.log("e")
                     character.addElement(this)
                     return 0
@@ -100,9 +100,21 @@ export default class Element extends Character {
             if ((xDistance <= range && (xDistance > 0 || (this.compound != undefined && character.compound != undefined))) && (yDistance <= range)) { //checks if the electrons are within a certain range of pixels
                 let pullTogether = false
                 let pushApart = false
-                let oppositeCharge = (character.isPlayer && this.positive) || character.positive == this.negative
-                pullTogether = oppositeCharge
-                pushApart = !oppositeCharge
+                if (!(this instanceof Compound) && !(character instanceof Compound)) {
+                    let oppositeCharge = (character.isPlayer && this.positive) || character.positive == this.negative
+                    pullTogether = oppositeCharge
+                    pushApart = !oppositeCharge
+                }
+                else if (!(this instanceof Compound) && (character instanceof Compound)) {
+                    let oppositeCharge = (this.isPlayer && character.getClosestElement(this).positive) || this.positive == character.getClosestElement(this).negative
+                    pullTogether = oppositeCharge
+                    pushApart = !oppositeCharge
+                }
+                else {
+                    let oppositeCharge = (character.isPlayer && this.getClosestElement(character).positive) || character.positive == this.getClosestElement(character).negative
+                    pullTogether = oppositeCharge
+                    pushApart = !oppositeCharge
+                }
 
                 if (pullTogether) {
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy > 0) vy = 0
@@ -234,6 +246,21 @@ export class Compound extends Element {
         else this.elementLayout.unshift(otherElement)
 
         this.setPos(this.xpos, this.ypos)
+    }
+
+    getClosestElement(character) {
+        let x = character.middlePos.getX
+        let y = character.middlePos.getY
+        let retElem = undefined
+        let lowestDist = undefined
+        this.elementLayout.forEach((element) => {
+            let totalDist = Math.abs(element.middlePos.getX - x) + Math.abs(element.middlePos.getY - y)
+            if (retElem == undefined || totalDist < lowestDist) {
+                retElem = element
+                lowestDist = totalDist
+            }
+        })
+        return retElem
     }
 
     insertInElementLayout(index, element) {
