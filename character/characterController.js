@@ -25,6 +25,8 @@ export default class characterController {
         this.inAirResistance = inAirResistance
         
         this.spriteMap = character.spriteMap
+
+        this.jumpAudio = new Audio("../audio/sounds/jump.wav")
     }
 
     /**
@@ -45,6 +47,7 @@ export default class characterController {
             //console.log(event.code)
             if (!this.character.disableInput) {
                 if (event.code == jump && (this.character.isGrounded() || this.flyingEnabled)) {
+                    this.jumpAudio.play()
                     this.character.applyVelocity(60, [0, this.jumpForce])
                     if (!(moveLeft || moveRight)) this.character.sprite = this.spriteMap.upFacing
                     else if (moveLeft) this.character.sprite = this.spriteMap.upLeftFacing

@@ -54,6 +54,7 @@ export default class Character {
 
         this.hitWallSound = new Audio("../audio/sounds/hitwall.wav")
         this.playAudio = true
+        this.hitGroundAudio = new Audio("../audio/sounds/hit ground.wav")
     }
 
     /**
@@ -236,7 +237,10 @@ export default class Character {
             this.applyVelocity(1, [0, this.fallingVelocity * this.airTime])
             this.airTime++
         }
-        else this.airTime = 0
+        else {
+            if (this.airTime > 300) this.hitGroundAudio.play()
+            this.airTime = 0
+        }
     }
 
     /**
