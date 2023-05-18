@@ -51,6 +51,9 @@ export default class Character {
 
         this.width = 0
         this.height = 0
+
+        this.hitWallSound = new Audio("../audio/sounds/hitwall.wav")
+        this.playAudio = true
     }
 
     /**
@@ -322,10 +325,18 @@ export default class Character {
         else return false
     }
 
-    // remove() {
-    //     this.level.characters.splice(this.level.characters.indexOf(this), 1)
-    //     this.divElem.remove()
-    // }
+    soundManager() {
+        if ((!this.moveLeft || !this.moveRight) && this.playAudio) {
+            this.hitWallSound.play()
+            this.playAudio = false
+        }
+        else if (this.moveLeft && this.moveRight) this.playAudio = true
+    }
+
+    clearCharacter() {
+        this.level.characters.splice(this.level.characters.indexOf(this), 1)
+        this.divElem.remove()
+    }
 
     /**
      * @description method to be ran every frame
@@ -340,5 +351,7 @@ export default class Character {
 
         this.applyGravity()
         this.collisionPhysics()
+
+        this.soundManager()
     }
 }

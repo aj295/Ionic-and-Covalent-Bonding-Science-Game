@@ -32,6 +32,8 @@ export default class Element extends Character {
         }
 
         this.electronegativity = electronegativity
+
+        this.makeCompSound = new Audio("./audio/sounds/make compound.wav")
     }
     
     elementMovement() {
@@ -77,10 +79,12 @@ export default class Element extends Character {
                     let newComp = new Compound(this, character)
                     newComp.draw()
                     this.level.addCharacter(newComp)
+                    this.makeCompSound.play()
                 }
                 else if (character instanceof Compound && (this instanceof Element && !(this instanceof Compound)) && character.getClosestElement(this).positive == this.negative) {
                     console.log("e")
                     character.addElement(this)
+                    this.makeCompSound.play()
                     return 0
                 }
             }
@@ -149,6 +153,8 @@ export default class Element extends Character {
         this.applyGravity()
         this.collisionPhysics()
         this.elementMovement()
+
+        this.soundManager()
     }
 }
 
@@ -300,5 +306,7 @@ export class Compound extends Element {
         this.applyGravity()
         this.collisionPhysics()
         this.elementMovement()
+
+        this.soundManager()
     }
 }

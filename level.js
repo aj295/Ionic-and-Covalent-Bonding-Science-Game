@@ -99,6 +99,16 @@ export default class Level {
         return colliding
     }
 
+    clearLevel() {
+        for (let i = 0; i < this.characters.length; i++) {
+            if (!this.characters[i].isPlayer && !(this.characters[i] instanceof Photon)) {
+                this.characters[i].clearCharacter()
+                i--
+            }
+        }
+        this.collisionLines = []
+    }
+
     tickLevel() {
         this.characters.forEach((character) => {
             character.tickFunctions()

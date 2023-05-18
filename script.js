@@ -18,56 +18,85 @@ let currImg = 0
 export let window_height = window.innerHeight
 export let window_width = window.innerWidth
 let currentLevel = undefined
+let currLevelNum = 0
 
-let level1Ini = function(thisLevel) {
+let character = undefined
+let characterController = undefined
+let photon = undefined
+
+let testLevelIni = function(thisLevel) {
     console.log("begin level")
-
-    let photon = new Photon(thisLevel, photonSprite, 100, 100, "photon")
-
-    let character = new Character(thisLevel, electron, 1000, 100, "elemAndElectron", 0.01)
-    character.draw()
-
-    let characterController = new CharacterController(character, 1.2, 300, 4)
-    characterController.startControllerInput("Space", "KeyA", "KeyD", "ShiftLeft")
-
-    let element = new Element(thisLevel, -6, 0.9, electron, window_width - 400, window_height - 1000, "elemAndElectron")
+    
+    let element = new Element(thisLevel, -6, 0.9, electron, window_width - 400, window_height - 1000, "element")
     element.draw()
-
-    let element2 = new Element(thisLevel, 9, 1.5, positive, 20, window_height - characterHeight - 1000, "elemAndElectron")
+    
+    let element2 = new Element(thisLevel, 9, 1.5, positive, 20, window_height - characterHeight - 1000, "element")
     element2.draw()
-
-    let element3 = new Element(thisLevel, 7, 0.4, positive, window_width - 100, window_height - characterHeight - 1000, "elemAndElectron")
+    
+    let element3 = new Element(thisLevel, 7, 0.4, positive, window_width - 100, window_height - characterHeight - 1000, "element")
     element3.draw()
-
+    
     let testFloor = new Line(10, window_height - 25, 500, window_height - 25, thisLevel)
-
+    
     let testFloorWithWall = new Line(10, 100, 10, window_height - 25, thisLevel)
 }
 
-let testLevel = new Level(1, [window_width/2, window_height - characterHeight], background, "./Level Backgrounds/watchroom.jpg", level1Ini)
-currentLevel = testLevel
+let switchLevels = (levelNum) => {
+    let levelNotFound = false
+    if (currentLevel != undefined) currentLevel.clearLevel()
+    
+    switch (levelNum) {
+        case 0: 
+            let testLevel = new Level(1, [window_width/2, window_height - characterHeight], background, "./Level Backgrounds/watchroom.jpg", testLevelIni)
+            currentLevel = testLevel
+            break
+        
+        default:
+            levelNotFound = true
+            break
+    }
+        
+    if (!levelNotFound) {
+        currLevelNum++
+        if (character != undefined) character.level = currentLevel
+        if (photon != undefined) photon.level = currentLevel
+    }
+}
+    
+switchLevels(currLevelNum)
 
 let tick = () => {
     requestAnimationFrame(tick)
     if (currentLevel != undefined) currentLevel.tickLevel()
 }
-
+    
 window.addEventListener("keypress", (event) => {
     if (event.code == "KeyF") {
         console.log("debug key")
-        if (currImg == backgroundImages.length - 1) {
-            currImg = 0
+        // if (currImg == backgroundImages.length - 1) {
+            //     currImg = 0
+            // }
+            // else {
+            //     currImg++
+            // }
+            // background.setAttribute("src", "./Level Backgrounds/" + backgroundImages[currImg])
+            
+            switchLevels(1)
         }
-        else {
-            currImg++
-        }
-        background.setAttribute("src", "./Level Backgrounds/" + backgroundImages[currImg])
-    }
-})
-
+    })
+        
 window.addEventListener("resize", (event) => {
     window_width = window.innerWidth
     window_height = window.innerHeight
 })
+        
+character = new Character(currentLevel, electron, 1000, 100, "electron", 0.01)
+character.draw()
+
+characterController = new CharacterController(character, 1.2, 300, 4)
+characterController.startControllerInput("Space", "KeyA", "KeyD", "ShiftLeft")
+
+photon = new Photon(currentLevel, photonSprite, 100, 100, "photon")
+
 
 tick()
