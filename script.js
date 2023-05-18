@@ -12,6 +12,9 @@ const photonSprite = new spriteMap("./Sprites/photonLeft.png", "./Sprites/photon
 const characterHeight = 50
 const background = document.getElementById("backgroundImage")
 
+const backgroundImages = ["Chemistry room.jpg", "kitchen.jpg", "watchroom.jpg", "workstation.jpg"]
+let currImg = 0
+
 export let window_height = window.innerHeight
 export let window_width = window.innerWidth
 let currentLevel = undefined
@@ -33,7 +36,7 @@ let level1Ini = function(thisLevel) {
     let element2 = new Element(thisLevel, 9, 1.5, positive, 20, window_height - characterHeight - 1000, "elemAndElectron")
     element2.draw()
 
-    let element3 = new Element(thisLevel, 4, 0.4, positive, window_width - 100, window_height - characterHeight - 1000, "elemAndElectron")
+    let element3 = new Element(thisLevel, 7, 0.4, positive, window_width - 100, window_height - characterHeight - 1000, "elemAndElectron")
     element3.draw()
 
     let testFloor = new Line(10, window_height - 25, 500, window_height - 25, thisLevel)
@@ -41,7 +44,7 @@ let level1Ini = function(thisLevel) {
     let testFloorWithWall = new Line(10, 100, 10, window_height - 25, thisLevel)
 }
 
-let testLevel = new Level(1, [window_width/2, window_height - characterHeight], background, "./epic background.jpg", level1Ini)
+let testLevel = new Level(1, [window_width/2, window_height - characterHeight], background, "./Level Backgrounds/watchroom.jpg", level1Ini)
 currentLevel = testLevel
 
 let tick = () => {
@@ -52,6 +55,13 @@ let tick = () => {
 window.addEventListener("keypress", (event) => {
     if (event.code == "KeyF") {
         console.log("debug key")
+        if (currImg == backgroundImages.length - 1) {
+            currImg = 0
+        }
+        else {
+            currImg++
+        }
+        background.setAttribute("src", "./Level Backgrounds/" + backgroundImages[currImg])
     }
 })
 
