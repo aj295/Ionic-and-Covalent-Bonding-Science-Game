@@ -1,7 +1,7 @@
 import Character from "./character/character.js"
 import Photon from "./photon.js"
 
-import { window_height, window_width } from "./script.js"
+import { window_height, window_width, sounds } from "./script.js"
 
 /**
      * 
@@ -33,7 +33,7 @@ export default class Element extends Character {
 
         this.electronegativity = electronegativity
 
-        this.makeCompSound = new Audio("./audio/sounds/make compound.wav")
+        this.makeCompSound = sounds[0]
     }
     
     elementMovement() {

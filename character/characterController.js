@@ -3,7 +3,7 @@ let moveRight = false
 let crouched = false
 let jumping = false
 let awaitFall = false
-//import { window_height, window_width } from "../script.js"
+import { sounds } from "../script.js"
 //effect how far the character is able to move along the x axis while in the air (greater number equals less movement in air)
 
 export default class characterController {
@@ -26,7 +26,7 @@ export default class characterController {
         
         this.spriteMap = character.spriteMap
 
-        this.jumpAudio = new Audio("../audio/sounds/jump.wav")
+        this.jumpAudio = sounds[3]
     }
 
     /**

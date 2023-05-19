@@ -1,4 +1,4 @@
-import { window_height, window_width } from "../script.js"
+import { window_height, window_width, sounds} from "../script.js"
 
 let availableId = 1
 
@@ -52,9 +52,9 @@ export default class Character {
         this.width = 0
         this.height = 0
 
-        this.hitWallSound = new Audio("../audio/sounds/hitwall.wav")
+        this.hitWallSound = sounds[1]
         this.playAudio = true
-        this.hitGroundAudio = new Audio("../audio/sounds/hit ground.wav")
+        this.hitGroundAudio = sounds[2]
     }
 
     /**

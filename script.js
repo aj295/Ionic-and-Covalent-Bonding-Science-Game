@@ -11,6 +11,7 @@ const positive = new spriteMap("./Sprites/positive.png")
 const photonSprite = new spriteMap("./Sprites/photonLeft.png", "./Sprites/photonLeft.png", "./Sprites/photonRight.png")
 const characterHeight = 50
 const background = document.getElementById("backgroundImage")
+export const sounds = [new Audio("./audio/sounds/make compound.wav"), new Audio("./audio/sounds/hitwall.wav"), new Audio("./audio/sounds/hit ground.wav"), new Audio("./audio/sounds/jump.wav")]
 
 const backgroundImages = ["Chemistry room.jpg", "kitchen.jpg", "watchroom.jpg", "workstation.jpg"]
 let currImg = 0
