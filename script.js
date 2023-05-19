@@ -41,6 +41,11 @@ let testLevelIni = function(thisLevel) {
     let testFloorWithWall = new Line(10, 100, 10, window_height - 25, thisLevel)
 }
 
+let level1Init = function(thisLevel) {
+    let element = new Element(thisLevel, -6, 0.9, electron, window_width - 400, window_height - 1000, "element")
+    element.draw()
+}
+
 let switchLevels = (levelNum) => {
     let levelNotFound = false
     if (currentLevel != undefined) currentLevel.clearLevel()
@@ -50,7 +55,12 @@ let switchLevels = (levelNum) => {
             let testLevel = new Level(1, [window_width/2, window_height - characterHeight], background, "./Level Backgrounds/watchroom.jpg", testLevelIni)
             currentLevel = testLevel
             break
-        
+
+        case 1:
+            let level1 = new Level(1, [window_width/2, window_height - characterHeight], background, "./Level Backgrounds/watchroom.jpg", level1Init)
+            currentLevel = level1
+            break
+
         default:
             levelNotFound = true
             break
@@ -58,8 +68,14 @@ let switchLevels = (levelNum) => {
         
     if (!levelNotFound) {
         currLevelNum++
-        if (character != undefined) character.level = currentLevel
-        if (photon != undefined) photon.level = currentLevel
+        if (character != undefined) {
+            character.level = currentLevel
+            currentLevel.characters.push(character)
+        }
+        if (photon != undefined) {
+            photon.level = currentLevel
+            currentLevel.characters.push(photon)
+        }
     }
 }
     
@@ -80,10 +96,12 @@ window.addEventListener("keypress", (event) => {
             //     currImg++
             // }
             // background.setAttribute("src", "./Level Backgrounds/" + backgroundImages[currImg])
-            
-            switchLevels(1)
-        }
-    })
+        
+        // switchLevels(1)
+
+        photon.goToCoords(0, 0, 100)
+    }
+})
         
 window.addEventListener("resize", (event) => {
     window_width = window.innerWidth
