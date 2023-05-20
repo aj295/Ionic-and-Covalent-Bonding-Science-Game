@@ -40,14 +40,14 @@ export function vwToPx(vw) {
 }
 
 let testLevelIni = function(thisLevel) {
-    let element = new Element(thisLevel, -6, 0.9, electron, window_width - 400, window_height - 1000, "element")
-    element.draw()
+    // let element = new Element(thisLevel, -6, 0.9, electron, window_width - 400, window_height - 1000, "element")
+    // element.draw()
     
-    let element2 = new Element(thisLevel, 9, 1.5, positive, 20, window_height - characterHeight - 1000, "element")
-    element2.draw()
+    // let element2 = new Element(thisLevel, 9, 1.5, positive, 20, window_height - characterHeight - 1000, "element")
+    // element2.draw()
     
-    let element3 = new Element(thisLevel, 7, 0.4, positive, window_width - 100, window_height - characterHeight - 1000, "element")
-    element3.draw()
+    // let element3 = new Element(thisLevel, 7, 0.4, positive, window_width - 100, window_height - characterHeight - 1000, "element")
+    // element3.draw()
     
     // let testFloor = new Line(10, window_height - 25, 500, window_height - 25, thisLevel)
     

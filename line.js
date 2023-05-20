@@ -24,7 +24,7 @@ export default class Line {
         }
         // this.divElem = document.createElement("div")
         // document.body.appendChild(this.divElem)
-        // this.divElem.style.position = "fixed"
+        // this.divElem.style.position = "absolute"
         // this.divElem.style.border = 1 + "px solid red"
         // this.divElem.style.top = y1 + "px"
         // this.divElem.style.left = x1 + "px"

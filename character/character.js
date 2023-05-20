@@ -35,6 +35,7 @@ export default class Character {
         this.moveDown = true
 
         this.onLineFloor = false //is true if the current floor that the character is on is a line
+        this.overthrowIsGrounded = false
 
         this.beginningXPos = xpos
         this.beginningYPos = ypos
@@ -166,13 +167,14 @@ export default class Character {
             let collidedWithLine = this.level.collidingWithLine(i, this.bottomLeft.getY, 3) != undefined
             var distanceToLine = -1 //distance to line object acting as floor -1 if not found
 
-            for (let j = this.bottomLeft.getY + 1; j <= window_height; j++) {
+            for (let j = this.middleBottom.getY + 1; j <= window_height; j++) {
                 if (this.level.collidingWithLine(i, j, 1) != undefined) {
                     distanceToLine = j - this.bottomLeft.getY
                 }
             }
             
-            if (distanceToLine < 8 && distanceToLine >= 0) {
+            if (distanceToLine < 10 && distanceToLine >= 0) {
+                console.log("e")
                 this.onLineFloor = true
                 return true
             }
@@ -185,15 +187,31 @@ export default class Character {
 
                 return true
             }
-
+            
             this.onLineFloor = false
             return false
         }
     }
-
+    
     collisionPhysics() { //im tellin u right now, dont try diagonal lines, they will not work, yet...
         let range = 5
         let offsetY = 0
+
+        for (let i = this.upperLeft.getX; i <= this.upperRight.getX; i++) {
+            //console.log(this.level.collidingWithLine(i, this.upperLeft.getY, 2))
+            let line = this.level.collidingWithLine(i, this.bottomLeft.getY, range)
+            if (line != undefined && line.horizontal) {
+                this.overthrowIsGrounded = true
+                this.onGround = true
+                this.onLineFloor = true
+                break
+            }
+            else {
+                this.overthrowIsGrounded = false
+                this.onLineFloor = false
+                this.onGround = false
+            }
+        }
 
         for (let i = this.bottomLeft.getY - offsetY; i >= this.upperLeft.getY; i--) {
             if (this.level.collidingWithLine(this.bottomLeft.getX, i, range) != undefined) {
@@ -349,7 +367,7 @@ export default class Character {
             this.init = false
         }
 
-        this.onGround = this.isGrounded()
+        if (!this.overthrowIsGrounded) this.onGround = this.isGrounded()
 
         this.applyGravity()
         this.collisionPhysics()
