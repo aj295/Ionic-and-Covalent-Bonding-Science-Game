@@ -26,11 +26,17 @@ let character = undefined
 let characterController = undefined
 let photon = undefined
 
-function pxToVh(px) {
+export function pxToVh(px) {
     return (px / window_height) * 100
 }
-function pxToVw(px) {
+export function pxToVw(px) {
     return (px / window_width) * 100
+}
+export function vhToPx(vh) {
+    return (vh / 100) * window_height
+}
+export function vwToPx(vw) {
+    return (vw / 100) * window_width
 }
 
 let testLevelIni = function(thisLevel) {
@@ -43,14 +49,28 @@ let testLevelIni = function(thisLevel) {
     let element3 = new Element(thisLevel, 7, 0.4, positive, window_width - 100, window_height - characterHeight - 1000, "element")
     element3.draw()
     
-    let testFloor = new Line(10, window_height - 25, 500, window_height - 25, thisLevel)
+    // let testFloor = new Line(10, window_height - 25, 500, window_height - 25, thisLevel)
     
-    let testFloorWithWall = new Line(10, 100, 10, window_height - 25, thisLevel)
+    // let testFloorWithWall = new Line(10, 100, 10, window_height - 25, thisLevel)
 
-    // let book1 = new Line(100 * 365 / window_width, 100 * 753 / window_height, 100 * 827 / window_width, 100 * 753 / window_height, thisLevel)
-    // let book2 = new Line(100 * 365 / window_width, 100 * 1 / window_height, 100 * 827 / window_width, 100 * 1 / window_height, thisLevel)
-    // let book3 = new Line(100 * 365 / window_width, 100 * 753 / window_height, 100 * 365 / window_width, 100 * 1 / window_height, thisLevel)
-    // let book4 = new Line(100 * 827 / window_width, 100 * 753 / window_height, 100 * 827 / window_width, 100 * 1 / window_height, thisLevel)
+    let redBookline1 = new Line(vwToPx(29.83), vhToPx(85.86), vwToPx(32.44), vhToPx(85.86), thisLevel)
+    let redBookline2 = new Line(vwToPx(29.83), vhToPx(99.43), vwToPx(32.44), vhToPx(99.43), thisLevel)
+    let redBookline3 = new Line(vwToPx(29.83), vhToPx(85.86), vwToPx(29.83), vhToPx(99.43), thisLevel)
+    let redBookline4 = new Line(vwToPx(32.44), vhToPx(85.86), vwToPx(32.44), vhToPx(99.43), thisLevel)
+
+    let line1 = new Line(vwToPx(79.38060309698452), vhToPx(87.115165336374), vwToPx(86.96006519967399), vhToPx(87.115165336374), thisLevel)
+    let line2 = new Line(vwToPx(79.38060309698452), vhToPx(99.54389965792474), vwToPx(86.96006519967399), vhToPx(99.54389965792474), thisLevel)
+    let line3 = new Line(vwToPx(79.38060309698452), vhToPx(87.115165336374), vwToPx(79.38060309698452), vhToPx(99.54389965792474), thisLevel)
+    let line4 = new Line(vwToPx(86.96006519967399), vhToPx(87.115165336374), vwToPx(86.96006519967399), vhToPx(99.54389965792474), thisLevel)
+
+    // let test = document.createElement("div")
+    // document.body.appendChild(test)
+    // test.style.width = 100 + "px"
+    // test.style.height = 100 + "px"
+    // test.style.left = 367 + "px"
+    // test.style.top = 753 + "px"
+    // test.style.backgroundColor = "red"
+    // test.style.position = "absolute"
 }
 
 let level1Init = function(thisLevel) {

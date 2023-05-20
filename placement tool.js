@@ -1,10 +1,11 @@
+import { pxToVh, pxToVw } from "./script.js"
+
 export function getCoordsOnClick() {
-    if (box == undefined) window.addEventListener("click", onClick)
-    else console.log("can not register event, perhaps you are making a collision box")
+    window.addEventListener("click", onClick)
 }
 
 function onClick(event) {
-    console.log("x" + event.x)
-    console.log("y" + event.y)
+    console.log("x: " + pxToVw(event.x))
+    console.log("y: " + pxToVh(event.y))
     window.removeEventListener("click", onClick)
 }

@@ -3,10 +3,13 @@ right = right most x coordinate
 top = upper most y coordinate
 bottom = lower most y coordinate
 
-let topLine = new Line(100 * left / window_width, 100 * top / window_height, 100 * right / window_width, 100 * top / window_height, thisLevel)
-let bottomLine = new Line(100 * left / window_width, 100 * bottom / window_height, 100 * right / window_width, 100 * bottom / window_height, thisLevel)
-let leftLine = new Line(100 * left / window_width, 100 * top / window_height, 100 * left / window_width, 100 * bottom / window_height, thisLevel)
-let rightLine = new Line(100 * right / window_width, 100 * top / window_height, 100 * right / window_width, 100 * bottom / window_height, thisLevel)
+let line1 = new Line(vwToPx(left), vhToPx(top), vwToPx(right), vhToPx(top), thisLevel)
+let line2 = new Line(vwToPx(left), vhToPx(bottom), vwToPx(right), vhToPx(bottom), thisLevel)
+let line3 = new Line(vwToPx(left), vhToPx(top), vwToPx(left), vhToPx(bottom), thisLevel)
+let line4 = new Line(vwToPx(right), vhToPx(top), vwToPx(right), vhToPx(bottom), thisLevel)
+
+vhToPx
+vwToPx
 
 left top right top
 left bottom right bottom
