@@ -58,10 +58,15 @@ let testLevelIni = function(thisLevel) {
     let redBookline3 = new Line(vwToPx(29.83), vhToPx(85.86), vwToPx(29.83), vhToPx(99.43), thisLevel)
     let redBookline4 = new Line(vwToPx(32.44), vhToPx(85.86), vwToPx(32.44), vhToPx(99.43), thisLevel)
 
-    let line1 = new Line(vwToPx(79.38060309698452), vhToPx(87.115165336374), vwToPx(86.96006519967399), vhToPx(87.115165336374), thisLevel)
-    let line2 = new Line(vwToPx(79.38060309698452), vhToPx(99.54389965792474), vwToPx(86.96006519967399), vhToPx(99.54389965792474), thisLevel)
-    let line3 = new Line(vwToPx(79.38060309698452), vhToPx(87.115165336374), vwToPx(79.38060309698452), vhToPx(99.54389965792474), thisLevel)
-    let line4 = new Line(vwToPx(86.96006519967399), vhToPx(87.115165336374), vwToPx(86.96006519967399), vhToPx(99.54389965792474), thisLevel)
+    let chairline1 = new Line(vwToPx(79.38060309698452), vhToPx(87.115165336374), vwToPx(86.96006519967399), vhToPx(87.115165336374), thisLevel)
+    let chairline2 = new Line(vwToPx(79.38060309698452), vhToPx(99.54389965792474), vwToPx(86.96006519967399), vhToPx(99.54389965792474), thisLevel)
+    let chairline3 = new Line(vwToPx(79.38060309698452), vhToPx(87.115165336374), vwToPx(79.38060309698452), vhToPx(99.54389965792474), thisLevel)
+    let chairline4 = new Line(vwToPx(86.96006519967399), vhToPx(87.115165336374), vwToPx(86.96006519967399), vhToPx(99.54389965792474), thisLevel)
+
+    let line1 = new Line(vwToPx(27.87286063569682), vhToPx(89.85176738882555), vwToPx(29.991850040749796), vhToPx(89.85176738882555), thisLevel)
+    let line2 = new Line(vwToPx(27.87286063569682), vhToPx(99.77194982896236), vwToPx(29.991850040749796), vhToPx(99.77194982896236), thisLevel)
+    let line3 = new Line(vwToPx(27.87286063569682), vhToPx(89.85176738882555), vwToPx(27.87286063569682), vhToPx(99.77194982896236), thisLevel)
+    let line4 = new Line(vwToPx(29.991850040749796), vhToPx(89.85176738882555), vwToPx(29.991850040749796), vhToPx(99.77194982896236), thisLevel)
 
     // let test = document.createElement("div")
     // document.body.appendChild(test)
