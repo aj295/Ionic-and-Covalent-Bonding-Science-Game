@@ -156,7 +156,7 @@ window.addEventListener("resize", (event) => {
     window_height = window.innerHeight
 })
         
-character = new Character(currentLevel, electron, 1000, 100, "electron", 0.01)
+character = new Character(currentLevel, electron, 1000, 100, "electron", 0.033)
 character.draw()
 
 characterController = new CharacterController(character, 1.2, 300, 4)
