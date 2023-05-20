@@ -5,7 +5,7 @@ import spriteMap from "./character/spriteMap.js"
 import Element from "./element.js"
 import Level from "./level.js"
 import Photon from "./photon.js"
-import { createCollisionBox, getCoordsOnClick } from "./placement tool.js"
+import { getCoordsOnClick } from "./placement tool.js"
 
 const electron = new spriteMap("./Sprites/negative.png")
 const positive = new spriteMap("./Sprites/positive.png")
@@ -39,6 +39,11 @@ let testLevelIni = function(thisLevel) {
     let testFloor = new Line(10, window_height - 25, 500, window_height - 25, thisLevel)
     
     let testFloorWithWall = new Line(10, 100, 10, window_height - 25, thisLevel)
+
+    let book1 = new Line(100 * 365 / window_width, 100 * 753 / window_height, 100 * 827 / window_width, 100 * 753 / window_height, thisLevel)
+    let book2 = new Line(100 * 365 / window_width, 100 * 1 / window_height, 100 * 827 / window_width, 100 * 1 / window_height, thisLevel)
+    let book3 = new Line(100 * 365 / window_width, 100 * 753 / window_height, 100 * 365 / window_width, 100 * 1 / window_height, thisLevel)
+    let book4 = new Line(100 * 827 / window_width, 100 * 753 / window_height, 100 * 827 / window_width, 100 * 1 / window_height, thisLevel)
 }
 
 let level1Init = function(thisLevel) {
@@ -104,10 +109,6 @@ window.addEventListener("keypress", (event) => {
 
     if (event.code == "KeyC") {
         getCoordsOnClick()
-    }
-
-    if (event.code == "KeyB") {
-        createCollisionBox()
     }
 })
 
