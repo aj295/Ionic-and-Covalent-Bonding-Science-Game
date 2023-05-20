@@ -26,6 +26,13 @@ let character = undefined
 let characterController = undefined
 let photon = undefined
 
+function pxToVh(px) {
+    return (px / window_height) * 100
+}
+function pxToVw(px) {
+    return (px / window_width) * 100
+}
+
 let testLevelIni = function(thisLevel) {
     let element = new Element(thisLevel, -6, 0.9, electron, window_width - 400, window_height - 1000, "element")
     element.draw()
@@ -40,10 +47,10 @@ let testLevelIni = function(thisLevel) {
     
     let testFloorWithWall = new Line(10, 100, 10, window_height - 25, thisLevel)
 
-    let book1 = new Line(100 * 365 / window_width, 100 * 753 / window_height, 100 * 827 / window_width, 100 * 753 / window_height, thisLevel)
-    let book2 = new Line(100 * 365 / window_width, 100 * 1 / window_height, 100 * 827 / window_width, 100 * 1 / window_height, thisLevel)
-    let book3 = new Line(100 * 365 / window_width, 100 * 753 / window_height, 100 * 365 / window_width, 100 * 1 / window_height, thisLevel)
-    let book4 = new Line(100 * 827 / window_width, 100 * 753 / window_height, 100 * 827 / window_width, 100 * 1 / window_height, thisLevel)
+    // let book1 = new Line(100 * 365 / window_width, 100 * 753 / window_height, 100 * 827 / window_width, 100 * 753 / window_height, thisLevel)
+    // let book2 = new Line(100 * 365 / window_width, 100 * 1 / window_height, 100 * 827 / window_width, 100 * 1 / window_height, thisLevel)
+    // let book3 = new Line(100 * 365 / window_width, 100 * 753 / window_height, 100 * 365 / window_width, 100 * 1 / window_height, thisLevel)
+    // let book4 = new Line(100 * 827 / window_width, 100 * 753 / window_height, 100 * 827 / window_width, 100 * 1 / window_height, thisLevel)
 }
 
 let level1Init = function(thisLevel) {
