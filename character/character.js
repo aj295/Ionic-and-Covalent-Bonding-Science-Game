@@ -123,8 +123,6 @@ export default class Character {
 
         this.divElem.style.border = "3px solid red"
 
-        console.log(this.divElem.children)
-
         this.divStyle = window.getComputedStyle(this.divElem)
         this.imageStyle = window.getComputedStyle(this.imageElement)
         this.declareCorners(parseInt(this.divStyle.getPropertyValue("width").replace(/[^0-9]/g,"")), parseInt(this.divStyle.getPropertyValue("height").replace(/[^0-9]/g,"")))

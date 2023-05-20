@@ -23,11 +23,13 @@ export default class Line {
             level.addCollisionLine(this)
         }
         // this.divElem = document.createElement("div")
-        // this.divElem.style.width = Math.abs(x1 - x2) + "px"
-        // this.divElem.style.height = Math.abs(y1 - y2) + "px"
-        // this.divElem.style.border = this.thickness + "px solid red"
-        // this.divElem.style.top = y1
-        // this.divElem.style.left = x1
+        // document.body.appendChild(this.divElem)
+        // this.divElem.style.position = "fixed"
+        // this.divElem.style.border = 1 + "px solid red"
+        // this.divElem.style.top = y1 + "px"
+        // this.divElem.style.left = x1 + "px"
+        // this.divElem.style.bottom = y2 + "px"
+        // this.divElem.style.right = x2 + "px"
     }
 
     update(x1, y1, x2, y2) {

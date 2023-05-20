@@ -82,7 +82,6 @@ export default class Element extends Character {
                     this.makeCompSound.play()
                 }
                 else if (character instanceof Compound && (this instanceof Element && !(this instanceof Compound)) && character.getClosestElement(this).positive == this.negative) {
-                    console.log("e")
                     character.addElement(this)
                     this.makeCompSound.play()
                     return 0
@@ -92,7 +91,6 @@ export default class Element extends Character {
             if (xDistance < stopDistance + this.width && xDistance != 0 && character.isPlayer && yDistance < stopDistance) {
                 //console.log("collided  with player")
                 //put end game logic here <--
-                console.log("hi")
             }
 
             let range = 600

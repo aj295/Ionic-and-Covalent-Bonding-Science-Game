@@ -5,6 +5,7 @@ import spriteMap from "./character/spriteMap.js"
 import Element from "./element.js"
 import Level from "./level.js"
 import Photon from "./photon.js"
+import { createCollisionBox, getCoordsOnClick } from "./placement tool.js"
 
 const electron = new spriteMap("./Sprites/negative.png")
 const positive = new spriteMap("./Sprites/positive.png")
@@ -26,8 +27,6 @@ let characterController = undefined
 let photon = undefined
 
 let testLevelIni = function(thisLevel) {
-    console.log("begin level")
-    
     let element = new Element(thisLevel, -6, 0.9, electron, window_width - 400, window_height - 1000, "element")
     element.draw()
     
@@ -100,9 +99,21 @@ window.addEventListener("keypress", (event) => {
         
         // switchLevels(1)
 
-        photon.goToCoords(0, 0, 100)
+        // photon.goToCoords(0, 0, 100)
+    }
+
+    if (event.code == "KeyC") {
+        getCoordsOnClick()
+    }
+
+    if (event.code == "KeyB") {
+        createCollisionBox()
     }
 })
+
+// window.addEventListener("mousemove", (event) => {
+    
+// })
         
 window.addEventListener("resize", (event) => {
     window_width = window.innerWidth
