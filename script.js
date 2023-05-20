@@ -159,7 +159,7 @@ window.addEventListener("resize", (event) => {
 character = new Character(currentLevel, electron, 1000, 100, "electron", 0.033)
 character.draw()
 
-characterController = new CharacterController(character, 1.2, 300, 4)
+characterController = new CharacterController(character, 1.2, vhToPx(35), 4)
 characterController.startControllerInput("Space", "KeyA", "KeyD", "ShiftLeft")
 
 photon = new Photon(currentLevel, photonSprite, 100, 100, "photon")
