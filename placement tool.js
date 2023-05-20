@@ -4,7 +4,7 @@ export function getCoordsOnClick() {
 }
 
 function onClick(event) {
-    console.log(event.x)
-    console.log(event.y)
+    console.log("x" + event.x)
+    console.log("y" + event.y)
     window.removeEventListener("click", onClick)
 }
