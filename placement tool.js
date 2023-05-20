@@ -2,20 +2,20 @@ import { pxToVh, pxToVw } from "./script.js"
 let count = 0
 let firstCoordPair = [undefined, undefined]
 let secondCoordPair = [undefined, undefined]
-let active = false
+let boxActive = false
 
-export function getCoordsOnClick() {
-    if (!active) {
-        window.addEventListener("click", onClick)
+export function beginMakingBox() {
+    if (!boxActive) {
+        window.addEventListener("click", clicksHandler)
         console.log("The tool for easily making a box of collision lines is currently active")
         console.log("make sure to first, click the upper right of box you are selecting")
         console.log("and then click the bottom right, in order to insure that this tool works")
-        active = true
+        boxActive = true
     }
     else console.log("currently already using function")
 }
 
-function onClick(event) {
+function clicksHandler(event) {
     count++
     if (count == 1) {
         firstCoordPair[0] = (pxToVw(event.x))
@@ -32,6 +32,20 @@ function onClick(event) {
 
         window.removeEventListener("click", onClick)
         count = 0
-        active = false
+        boxActive = false
     }
+}
+
+export function getCoordsOnClick() {
+    if (!boxActive) window.addEventListener("click", onClick)
+    else console.log("can not register event, perhaps you are making a collision box")
+    window.addEventListener("click", onClick)
+}
+
+function onClick(event) {
+    console.log("x" + event.x + " -> px")
+    console.log("y" + event.y + " -> px")
+    console.log("x: " + pxToVw(event.x) + " -> vw")
+    console.log("y: " + pxToVh(event.y) + " -> vh")
+    window.removeEventListener("click", onClick)
 }

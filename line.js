@@ -32,10 +32,10 @@ export default class Line {
         // this.divElem.style.right = x2 + "px"
     }
 
-    update(x1, y1, x2, y2) {
-        this.x1 += x1
-        this.y1 += y1
-        this.x2 += x2
-        this.y2 += y2
+    offset(xValue, yValue) {
+        this.x1 += xValue
+        this.y1 += yValue
+        this.x2 += xValue
+        this.y2 += yValue
     }
 }

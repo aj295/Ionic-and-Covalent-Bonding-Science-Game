@@ -5,7 +5,7 @@ import spriteMap from "./character/spriteMap.js"
 import Element from "./element.js"
 import Level from "./level.js"
 import Photon from "./photon.js"
-import { getCoordsOnClick } from "./placement tool.js"
+import { beginMakingBox, getCoordsOnClick } from "./placement tool.js"
 
 const electron = new spriteMap("./Sprites/negative.png")
 const positive = new spriteMap("./Sprites/positive.png")
@@ -141,6 +141,9 @@ window.addEventListener("keypress", (event) => {
 
     if (event.code == "KeyC") {
         getCoordsOnClick()
+    }
+    if (event.code == "KeyB") {
+        beginMakingBox()
     }
 })
 
