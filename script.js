@@ -6,9 +6,12 @@ import Element from "./element.js"
 import Level from "./level.js"
 import Photon from "./photon.js"
 import { beginMakingBox, getCoordsOnClick } from "./placement tool.js"
+import { kitchenLevel, testLevelIni } from "./level instructions.js"
 
 const electron = new spriteMap("./Sprites/negative.png")
 const positive = new spriteMap("./Sprites/positive.png")
+const chorineSprite = new spriteMap("./Element Symbols/Chlorine.jpg")
+const sodiumSprite = new spriteMap("./Element Symbols/Sodium.jpg")
 const photonSprite = new spriteMap("./Sprites/photonLeft.png", "./Sprites/photonLeft.png", "./Sprites/photonRight.png")
 const characterHeight = 50
 const background = document.getElementById("backgroundImage")
@@ -20,7 +23,7 @@ let currImg = 0
 export let window_height = window.innerHeight
 export let window_width = window.innerWidth
 let currentLevel = undefined
-let currLevelNum = 0
+let currLevelNum = 1
 
 let character = undefined
 let characterController = undefined
@@ -39,50 +42,6 @@ export function vwToPx(vw) {
     return (vw / 100) * window_width
 }
 
-let testLevelIni = function(thisLevel) {
-    // let element = new Element(thisLevel, -6, 0.9, electron, window_width - 400, window_height - 1000, "element")
-    // element.draw()
-    
-    // let element2 = new Element(thisLevel, 9, 1.5, positive, 20, window_height - characterHeight - 1000, "element")
-    // element2.draw()
-    
-    // let element3 = new Element(thisLevel, 7, 0.4, positive, window_width - 100, window_height - characterHeight - 1000, "element")
-    // element3.draw()
-    
-    // let testFloor = new Line(10, window_height - 25, 500, window_height - 25, thisLevel)
-    
-    // let testFloorWithWall = new Line(10, 100, 10, window_height - 25, thisLevel)
-
-    let redBookline1 = new Line(vwToPx(29.83), vhToPx(85.86), vwToPx(32.44), vhToPx(85.86), thisLevel)
-    let redBookline2 = new Line(vwToPx(29.83), vhToPx(99.43), vwToPx(32.44), vhToPx(99.43), thisLevel)
-    let redBookline3 = new Line(vwToPx(29.83), vhToPx(85.86), vwToPx(29.83), vhToPx(99.43), thisLevel)
-    let redBookline4 = new Line(vwToPx(32.44), vhToPx(85.86), vwToPx(32.44), vhToPx(99.43), thisLevel)
-
-    let chairline1 = new Line(vwToPx(79.38060309698452), vhToPx(87.115165336374), vwToPx(86.96006519967399), vhToPx(87.115165336374), thisLevel)
-    let chairline2 = new Line(vwToPx(79.38060309698452), vhToPx(99.54389965792474), vwToPx(86.96006519967399), vhToPx(99.54389965792474), thisLevel)
-    let chairline3 = new Line(vwToPx(79.38060309698452), vhToPx(87.115165336374), vwToPx(79.38060309698452), vhToPx(99.54389965792474), thisLevel)
-    let chairline4 = new Line(vwToPx(86.96006519967399), vhToPx(87.115165336374), vwToPx(86.96006519967399), vhToPx(99.54389965792474), thisLevel)
-
-    let line1 = new Line(vwToPx(27.87286063569682), vhToPx(89.85176738882555), vwToPx(29.991850040749796), vhToPx(89.85176738882555), thisLevel)
-    let line2 = new Line(vwToPx(27.87286063569682), vhToPx(99.77194982896236), vwToPx(29.991850040749796), vhToPx(99.77194982896236), thisLevel)
-    let line3 = new Line(vwToPx(27.87286063569682), vhToPx(89.85176738882555), vwToPx(27.87286063569682), vhToPx(99.77194982896236), thisLevel)
-    let line4 = new Line(vwToPx(29.991850040749796), vhToPx(89.85176738882555), vwToPx(29.991850040749796), vhToPx(99.77194982896236), thisLevel)
-
-    // let test = document.createElement("div")
-    // document.body.appendChild(test)
-    // test.style.width = 100 + "px"
-    // test.style.height = 100 + "px"
-    // test.style.left = 367 + "px"
-    // test.style.top = 753 + "px"
-    // test.style.backgroundColor = "red"
-    // test.style.position = "absolute"
-}
-
-let level1Init = function(thisLevel) {
-    let element = new Element(thisLevel, -6, 0.9, electron, window_width - 400, window_height - 1000, "element")
-    element.draw()
-}
-
 let switchLevels = (levelNum) => {
     let levelNotFound = false
     if (currentLevel != undefined) currentLevel.clearLevel()
@@ -94,7 +53,7 @@ let switchLevels = (levelNum) => {
             break
 
         case 1:
-            let level1 = new Level(1, [window_width/2, window_height - characterHeight], background, "./Level Backgrounds/watchroom.jpg", level1Init)
+            let level1 = new Level(1, [window_width/2, window_height - characterHeight], background, "./Level Backgrounds/kitchen.jpg", kitchenLevel)
             currentLevel = level1
             break
 

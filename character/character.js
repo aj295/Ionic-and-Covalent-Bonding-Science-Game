@@ -122,7 +122,7 @@ export default class Character {
         this.imageElement.style.left = 0
         this.imageElement.style.top = 0
 
-        this.divElem.style.border = "3px solid red"
+        // this.divElem.style.border = "3px solid red"
 
         this.divStyle = window.getComputedStyle(this.divElem)
         this.imageStyle = window.getComputedStyle(this.imageElement)

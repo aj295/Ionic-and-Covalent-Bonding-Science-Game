@@ -8,7 +8,7 @@ export function beginMakingBox() {
     if (!boxActive) {
         window.addEventListener("click", clicksHandler)
         console.log("The tool for easily making a box of collision lines is currently active")
-        console.log("make sure to first, click the upper right of box you are selecting")
+        console.log("make sure to first, click the upper left of box you are selecting")
         console.log("and then click the bottom right, in order to insure that this tool works")
         boxActive = true
     }
@@ -32,6 +32,8 @@ function clicksHandler(event) {
 
         window.removeEventListener("click", onClick)
         count = 0
+        firstCoordPair = [undefined, undefined]
+        secondCoordPair = [undefined, undefined]    
         boxActive = false
     }
 }
