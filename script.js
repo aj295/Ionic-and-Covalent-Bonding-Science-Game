@@ -10,8 +10,6 @@ import { kitchenLevel, testLevelIni } from "./level instructions.js"
 
 const electron = new spriteMap("./Sprites/negative.png")
 const positive = new spriteMap("./Sprites/positive.png")
-const chorineSprite = new spriteMap("./Element Symbols/Chlorine.jpg")
-const sodiumSprite = new spriteMap("./Element Symbols/Sodium.jpg")
 const photonSprite = new spriteMap("./Sprites/photonLeft.png", "./Sprites/photonLeft.png", "./Sprites/photonRight.png")
 const characterHeight = 50
 const background = document.getElementById("backgroundImage")
@@ -53,7 +51,7 @@ let switchLevels = (levelNum) => {
             break
 
         case 1:
-            let level1 = new Level(1, [window_width/2, window_height - characterHeight], background, "./Level Backgrounds/kitchen.jpg", kitchenLevel)
+            let level1 = new Level(1, [vwToPx(50.28524857375714), vhToPx(68.30102622576966)], background, "./Level Backgrounds/kitchen.jpg", kitchenLevel)
             currentLevel = level1
             break
 
@@ -115,8 +113,9 @@ window.addEventListener("resize", (event) => {
     window_height = window.innerHeight
 })
         
-character = new Character(currentLevel, electron, 1000, 100, "electron", 0.033)
+character = new Character(currentLevel, electron, 0, 0, "electron", 0.033)
 character.draw()
+currentLevel.initPlayerElement(character)
 
 characterController = new CharacterController(character, 1.2, vhToPx(35), 4)
 characterController.startControllerInput("Space", "KeyA", "KeyD", "ShiftLeft")

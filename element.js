@@ -93,7 +93,7 @@ export default class Element extends Character {
                 //put end game logic here <--
             }
 
-            let range = 600
+            let range = 400
             const MUTLI_FACTOR = 100 //higher number makes the element move faster in general
             const MOVING_FRAMES = 1 //the amount of animation frames the velocity is applied - more frames = smoother movement for more lag and faster movement
 
@@ -148,7 +148,7 @@ export default class Element extends Character {
         }
 
         this.onGround = this.isGrounded()
-        this.applyGravity()
+        if (!this.overthrowIsGrounded) this.applyGravity()
         this.collisionPhysics()
         this.elementMovement()
 
@@ -300,7 +300,7 @@ export class Compound extends Element {
             this.init = false
         }
         
-        this.onGround = this.isGrounded()
+        if (!this.overthrowIsGrounded) this.onGround = this.isGrounded()
         this.applyGravity()
         this.collisionPhysics()
         this.elementMovement()

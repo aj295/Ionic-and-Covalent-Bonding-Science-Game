@@ -151,7 +151,10 @@ export default class Character {
 
         if ((!this.moveLeft || this.xpos <= 0) && offSetX < 0) offSetX = 0 
         if ((!this.moveRight || this.upperRight.getX >= window_width) && offSetX > 0) offSetX = 0
-        if (!this.moveUp && offSetY > 0) offSetY = 0
+        if (!this.moveUp && offSetY > 0) {
+            offSetY = 0
+            console.log("hi")
+        }
         
         this.setPos(this.xpos + offSetX, this.ypos - offSetY)
     }
@@ -174,7 +177,6 @@ export default class Character {
             }
             
             if (distanceToLine < 10 && distanceToLine >= 0) {
-                console.log("e")
                 this.onLineFloor = true
                 return true
             }
@@ -237,7 +239,7 @@ export default class Character {
         }
         for (let i = this.upperLeft.getX; i <= this.upperRight.getX; i++) {
             //console.log(this.level.collidingWithLine(i, this.upperLeft.getY, 2))
-            if (this.level.collidingWithLine(i, this.upperLeft.getY, range) != undefined) {
+            if (this.level.collidingWithLine(i, this.upperLeft.getY + 1, range) != undefined) {
                 this.moveUp = false
                 break
             }

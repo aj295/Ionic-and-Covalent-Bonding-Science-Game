@@ -13,11 +13,19 @@ export default class Level {
     constructor(level, beginningPos, backGroundElement, backGroundImage, initializeLevel) {
         this.level = level
         this.beginningPos = beginningPos
+        this.initPlayerPos = false
         this.collisionLines = []
         this.characters = []
+        this.playerElement = undefined
 
+        
         backGroundElement.setAttribute("src", backGroundImage)
         initializeLevel(this)
+    }
+    
+    initPlayerElement(playerElement) {
+        this.playerElement
+        playerElement.setPos(this.beginningPos[0], this.beginningPos[1])
     }
 
     addCollisionLine(line) {

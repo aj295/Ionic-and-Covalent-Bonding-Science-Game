@@ -1,6 +1,10 @@
 import Line from "./line.js"
 import Element from "./element.js"
+import spriteMap from "./character/spriteMap.js"
 import { vhToPx, pxToVh, vwToPx, pxToVw } from "./script.js"
+
+const chlorineSprite = new spriteMap("./Element Symbols/Chlorine.jpg")
+const sodiumSprite = new spriteMap("./Element Symbols/Sodium.jpg")
 
 export let testLevelIni = function(thisLevel) {
     // let element = new Element(thisLevel, -6, 0.9, electron, window_width - 400, window_height - 1000, "element")
@@ -83,4 +87,8 @@ export let kitchenLevel = function(thisLevel) {
     let shelfline2 = new Line(vwToPx(84.67807660961695), vhToPx(49.48688711516533), vwToPx(99.83700081499592), vhToPx(49.48688711516533), thisLevel)
     let shelfline3 = new Line(vwToPx(84.67807660961695), vhToPx(47.32041049030787), vwToPx(84.67807660961695), vhToPx(49.48688711516533), thisLevel)
     let shelfline4 = new Line(vwToPx(99.83700081499592), vhToPx(47.32041049030787), vwToPx(99.83700081499592), vhToPx(49.48688711516533), thisLevel)
+
+
+    let Sodium = new Element(thisLevel, 1, 0.93, sodiumSprite, vwToPx(21.434392828035858), vhToPx(1.0262257696693273), "element")
+    // let Chlorine = new Element(thisLevel, -1, 3.16, chlorineSprite, vwToPx(96.65851670741647), vhToPx(41.163055872291906), "element")
 }
