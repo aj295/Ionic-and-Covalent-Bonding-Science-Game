@@ -38,6 +38,7 @@ export default class Element extends Character {
     
     elementMovement() {
         this.level.characters.forEach(character => {
+            if (character == undefined) return 0
             if (character instanceof Photon) return 0
             if ((!this.isPlayer && this.ionCharge == 0) || (!character.isPlayer && character.ionCharge == 0)) return 0
             if (this.isColliding(character)) {
@@ -70,12 +71,20 @@ export default class Element extends Character {
             if (!this.moveUp && vy > 0) vy = 0
 
 
-            let stopDistance = 100
+            let stopDistance = 10
             let xDistance = Math.abs(this.middlePos.getX - character.middlePos.getX)
             let yDistance = Math.abs(this.middlePos.getY - character.middlePos.getY)
 
             if (yDistance <=5 && xDistance <= character.width + stopDistance && xDistance != 0 && !character.isPlayer) {
                 if ((this instanceof Element && !(this instanceof Compound)) && (character instanceof Element && !(character instanceof Compound))) { //two non-player elements colliding physics
+                    if (this.upperLeft.getX < character.upperLeft.getX) {
+                        let left = this
+                        let right = character
+                    }
+                    else {
+                        let left = character
+                        let right = this
+                    }
                     let newComp = new Compound(this, character)
                     newComp.draw()
                     this.level.addCharacter(newComp)
@@ -121,13 +130,20 @@ export default class Element extends Character {
                 if (pullTogether) {
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy > 0) vy = 0
 
-                    character.applyVelocity(MOVING_FRAMES, [-vx, -vy / 2])
+                    if (!((!character.moveLeft && -vx < 0) || (!character.moveRight && -vx > 0))) {
+                        if (!character.player && (character.onGround && -vy < 0)) character.applyVelocity(MOVING_FRAMES, [-vx, -vy / 2])
+                        else character.applyVelocity(MOVING_FRAMES, [-vx, 0])
+                    }
+
                     this.applyVelocity(MOVING_FRAMES, [vx * this.electronegativity, -vy * this.electronegativity])
                 }
                 else if (pushApart) {
                     if ((this.middleBottom.getY > window_height - 20 || this.onLineFloor) && vy < 0) vy = 0
 
-                    character.applyVelocity(MOVING_FRAMES, [vx, vy / 2])
+                    if (!((!character.moveLeft && vx < 0) || (!character.moveRight && vx > 0))) {
+                        if (!character.player && (character.onGround && vy < 0)) character.applyVelocity(MOVING_FRAMES, [vx, vy / 2]) 
+                        else character.applyVelocity(MOVING_FRAMES, [vx, 0])
+                    }
 
                     if (Math.abs(this.middlePos.getX - character.middlePos.getX) < MULTIPLIER / 2 && (!character.moveLeft || !character.moveRight)) this.applyVelocity(MOVING_FRAMES, [-vx * 10, 0])
 
@@ -151,8 +167,6 @@ export default class Element extends Character {
         if (!this.overthrowIsGrounded) this.applyGravity()
         this.collisionPhysics()
         this.elementMovement()
-
-        this.soundManager()
     }
 }
 
@@ -304,7 +318,5 @@ export class Compound extends Element {
         this.applyGravity()
         this.collisionPhysics()
         this.elementMovement()
-
-        this.soundManager()
     }
 }

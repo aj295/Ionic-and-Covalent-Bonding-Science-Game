@@ -26,7 +26,7 @@ export default class characterController {
         
         this.spriteMap = character.spriteMap
 
-        this.jumpAudio = sounds[3]
+        this.jumpAudio = sounds[2]
     }
 
     /**

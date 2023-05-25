@@ -53,9 +53,8 @@ export default class Character {
         this.width = 0
         this.height = 0
 
-        this.hitWallSound = sounds[1]
         this.playAudio = true
-        this.hitGroundAudio = sounds[2]
+        this.hitGroundAudio = sounds[1]
     }
 
     /**
@@ -238,13 +237,20 @@ export default class Character {
             else this.moveRight = true
         }
         for (let i = this.upperLeft.getX; i <= this.upperRight.getX; i++) {
-            //console.log(this.level.collidingWithLine(i, this.upperLeft.getY, 2))
-            if (this.level.collidingWithLine(i, this.upperLeft.getY + 1, range) != undefined) {
-                this.moveUp = false
-                break
+            for (let j = 0; j <= 4; j++) {
+                if (this.level.collidingWithLine(i, this.upperLeft.getY - j, 1) != undefined) {
+                    this.moveUp = false
+                    return
+                }
             }
-            else this.moveUp = true
+            //console.log(this.level.collidingWithLine(i, this.upperLeft.getY, 2))
+            // if (this.level.collidingWithLine(i, this.upperLeft.getY + 1, range) != undefined) {
+            //     this.moveUp = false
+            //     break
+            // }
+            // else this.moveUp = true
         }
+        this.moveUp = true
     }
 
     /**
@@ -347,13 +353,13 @@ export default class Character {
         else return false
     }
 
-    soundManager() {
-        if ((!this.moveLeft || !this.moveRight) && this.playAudio) {
-            this.hitWallSound.play()
-            this.playAudio = false
-        }
-        else if (this.moveLeft && this.moveRight) this.playAudio = true
-    }
+    // soundManager() {
+    //     if ((!this.moveLeft || !this.moveRight) && this.playAudio) {
+    //         this.hitWallSound.play()
+    //         this.playAudio = false
+    //     }
+    //     else if (this.moveLeft && this.moveRight) this.playAudio = true
+    // }
 
     clearCharacter() {
         this.level.characters.splice(this.level.characters.indexOf(this), 1)
@@ -373,7 +379,5 @@ export default class Character {
 
         this.applyGravity()
         this.collisionPhysics()
-
-        this.soundManager()
     }
 }
